@@ -4,3 +4,27 @@
 [submodule "local/bin"]
 	path = local/bin
 	url = http://users.dune-project.org/repositories/projects/dune-demos-bin.git
+[submodule "dune-common"]
+	path = dune-common
+	url = http://git.dune-project.org/repositories/dune-common
+[submodule "dune-python"]
+	path = dune-python
+	url = https://gitlab.dune-project.org/quality/dune-python.git
+[submodule "dune-testtools"]
+	path = dune-testtools
+	url = https://gitlab.dune-project.org/quality/dune-testtools.git
+[submodule "dune-localfunctions"]
+	path = dune-localfunctions
+	url = http://git.dune-project.org/repositories/dune-localfunctions
+[submodule "dune-geometry"]
+	path = dune-geometry
+	url = http://git.dune-project.org/repositories/dune-geometry
+[submodule "dune-grid"]
+	path = dune-grid
+	url = http://git.dune-project.org/repositories/dune-grid
+[submodule "dune-xt-common"]
+	path = dune-xt-common
+	url = https://github.com/dune-community/dune-xt-common.git
+[submodule "dune-istl"]
+	path = dune-istl
+	url = http://git.dune-project.org/repositories/dune-istl
