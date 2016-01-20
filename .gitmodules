@@ -28,3 +28,6 @@
 [submodule "dune-istl"]
 	path = dune-istl
 	url = http://git.dune-project.org/repositories/dune-istl
+[submodule "dune-xt-grid"]
+	path = dune-xt-grid
+	url = https://github.com/dune-community/dune-xt-grid.git
