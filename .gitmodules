@@ -37,3 +37,6 @@
 [submodule "scripts"]
 	path = scripts
 	url = https://github.com/wwu-numerik/scripts.git
+[submodule "dune-xt-la"]
+	path = dune-xt-la
+	url = https://github.com/dune-community/dune-xt-la.git
