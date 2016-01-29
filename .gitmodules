@@ -40,3 +40,12 @@
 [submodule "dune-xt-la"]
 	path = dune-xt-la
 	url = https://github.com/dune-community/dune-xt-la.git
+[submodule "dune-fem-unofficial"]
+	path = dune-fem
+	url = https://gitlab.dune-project.org/dune-fem/dune-fem.git
+[submodule "dune-typetree"]
+	path = dune-typetree
+	url = http://git.dune-project.org/repositories/dune-typetree
+[submodule "dune-pdelab-unofficial"]
+	path = dune-pdelab
+	url = https://gitlab.dune-project.org/pdelab/dune-pdelab.git
