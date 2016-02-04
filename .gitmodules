@@ -6,7 +6,7 @@
 	url = http://users.dune-project.org/repositories/projects/dune-demos-bin.git
 [submodule "dune-common"]
 	path = dune-common
-	url = http://git.dune-project.org/repositories/dune-common
+	url = http://gitlab.dune-project.org/core/dune-common.git
 [submodule "dune-python"]
 	path = dune-python
 	url = https://gitlab.dune-project.org/quality/dune-python.git
@@ -15,19 +15,19 @@
 	url = https://gitlab.dune-project.org/quality/dune-testtools.git
 [submodule "dune-localfunctions"]
 	path = dune-localfunctions
-	url = http://git.dune-project.org/repositories/dune-localfunctions
+	url = http://gitlab.dune-project.org/core/dune-localfunctions.git
 [submodule "dune-geometry"]
 	path = dune-geometry
-	url = http://git.dune-project.org/repositories/dune-geometry
+	url = http://gitlab.dune-project.org/core/dune-geometry.git
 [submodule "dune-grid"]
 	path = dune-grid
-	url = http://git.dune-project.org/repositories/dune-grid
+	url = http://gitlab.dune-project.org/core/dune-grid.git
 [submodule "dune-xt-common"]
 	path = dune-xt-common
 	url = https://github.com/dune-community/dune-xt-common.git
 [submodule "dune-istl"]
 	path = dune-istl
-	url = http://git.dune-project.org/repositories/dune-istl
+	url = http://gitlab.dune-project.org/core/dune-istl.git
 [submodule "dune-xt-grid"]
 	path = dune-xt-grid
 	url = https://github.com/dune-community/dune-xt-grid.git
@@ -45,7 +45,7 @@
 	url = https://gitlab.dune-project.org/dune-fem/dune-fem.git
 [submodule "dune-typetree"]
 	path = dune-typetree
-	url = http://git.dune-project.org/repositories/dune-typetree
+	url = http://gitlab.dune-project.org/core/dune-typetree.git
 [submodule "dune-pdelab-unofficial"]
 	path = dune-pdelab
 	url = https://gitlab.dune-project.org/pdelab/dune-pdelab.git
