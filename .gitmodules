@@ -45,7 +45,7 @@
 	url = https://gitlab.dune-project.org/dune-fem/dune-fem.git
 [submodule "dune-typetree"]
 	path = dune-typetree
-	url = http://gitlab.dune-project.org/core/dune-typetree.git
+	url = http://gitlab.dune-project.org/pdelab/dune-typetree.git
 [submodule "dune-pdelab-unofficial"]
 	path = dune-pdelab
 	url = https://gitlab.dune-project.org/pdelab/dune-pdelab.git
