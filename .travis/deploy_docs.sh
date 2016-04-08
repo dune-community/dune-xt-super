@@ -10,7 +10,8 @@ pushd ${BASEDIR}
 
 git clone git@github.com:dune-community/dune-community.github.io.git site
 
-${THISDIR}/build_docs.sh ${PWD}/build
+BUILDDIR=${PWD}/build
+${THISDIR}/build_docs.sh ${BUILDDIR}
 
 cd site
 git config user.name "DUNE Community Bot"
