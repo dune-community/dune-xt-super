@@ -9,15 +9,34 @@ sudo: required
 dist: trusty
 language: generic
 
-script:
-    - cd ${TRAVIS_BUILD_DIR}
-    - git submodule update --init --recursive
-    - git submodule status
+addons:
+  apt:
+    sources:
+    - 'ubuntu-toolchain-r-test'
+    packages:
+    - cmake
+    - doxygen
+    - texlive-base
+    - python-virtualenv
+    - libboost1.55-all-dev
+    - python-pip
+    - libtbb-dev
+    - libsuitesparse-dev
+    - ninja-build
+    - git
+    - g++-4.9
+    - gcc-4.9
 
 before_script:
     - pushd ${TRAVIS_BUILD_DIR}/.travis
     - openssl aes-256-cbc -K $encrypted_862ca47045d1_key -iv $encrypted_862ca47045d1_iv -in github_deploy.rsa.enc -out github_deploy.rsa -d
     - popd
+
+deploy:
+    provider: script
+    script: .travis/deploy_docs.sh
+    on:
+      branch: doc_deployment
 
 notifications:
   email:
