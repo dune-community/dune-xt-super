@@ -6,7 +6,6 @@ THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 BASEDIR=${TRAVIS_BUILD_DIR:-${THISDIR}/..}
 ID=${TRAVIS_TAG:-${TRAVIS_BRANCH}}
 
-${THISDIR}/init_sshkey.sh
 pushd ${BASEDIR}
 
 git clone git@github.com:dune-community/dune-community.github.io.git site

@@ -29,7 +29,7 @@ addons:
 
 before_script:
     - pushd ${TRAVIS_BUILD_DIR}/.travis
-    - openssl aes-256-cbc -K $encrypted_862ca47045d1_key -iv $encrypted_862ca47045d1_iv -in github_deploy.rsa.enc -out github_deploy.rsa -d
+    - ./init_sshkey.sh
     - popd
 
 deploy:
