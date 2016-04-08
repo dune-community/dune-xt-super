@@ -29,7 +29,7 @@ addons:
 
 before_script:
     - pushd ${TRAVIS_BUILD_DIR}/.travis
-    - ./init_sshkey.sh
+    - ./init_sshkey.sh ${encrypted_862ca47045d1_key} ${encrypted_862ca47045d1_iv} dune-community.github.io
     - popd
 
 deploy:
