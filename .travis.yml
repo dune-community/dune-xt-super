@@ -35,8 +35,6 @@ before_script:
 deploy:
     provider: script
     script: .travis/deploy_docs.sh
-    on:
-      branch: doc_deployment
 
 notifications:
   email:
