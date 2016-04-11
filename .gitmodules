@@ -6,7 +6,7 @@
 	url = https://github.com/dune-community/local-bin.git
 [submodule "dune-common"]
 	path = dune-common
-	url = http://gitlab.dune-project.org/core/dune-common.git
+	url = http://gitlab.dune-project.org/rene.milk/dune-common.git
 [submodule "dune-python"]
 	path = dune-python
 	url = https://gitlab.dune-project.org/quality/dune-python.git
