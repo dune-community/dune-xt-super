@@ -1,9 +1,9 @@
 [submodule "config.opts"]
 	path = config.opts
-	url = https://github.com/wwu-numerik/dune-config-opts.git
+	url = https://github.com/dune-community/config.opts.git
 [submodule "local/bin"]
 	path = local/bin
-	url = http://users.dune-project.org/repositories/projects/dune-demos-bin.git
+	url = https://github.com/dune-community/local-bin.git
 [submodule "dune-common"]
 	path = dune-common
 	url = http://gitlab.dune-project.org/core/dune-common.git
