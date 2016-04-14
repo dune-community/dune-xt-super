@@ -1,11 +1,6 @@
-project_name='dune-xt-common'
-slug='dune-community/dune-xt-common'
-
-authors='''
-# Authors:
+authors='''# Authors:
 #   Felix Schindler (2015 - 2016)
 #   Rene Milk       (2015 - 2016)
-#   Tobias Leibner  (2015)
-'''
+#   Tobias Leibner  (2015)'''
 
 modules_to_delete='dune-xt-grid dune-xt-la dune-xt-functions'
