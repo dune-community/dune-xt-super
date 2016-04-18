@@ -11,7 +11,7 @@ BUILDDIR=${2}
 set -u 
 pushd ${BASEDIR}
 
-git clone git@github.com:wwu-numerik/wwu-numerik.github.io.git site
+git clone git@github.com:dune-community/dune-community.github.io.git site
 
 cd site
 git config user.name "DUNE Community Bot"
