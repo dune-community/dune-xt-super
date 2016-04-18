@@ -132,7 +132,7 @@ matrix:
       env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete}"
     - os: linux
       addons: *gcc49
-      env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab dune-typetree dune-grid dune-istl"
+      env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab dune-typetree ${extra_deletes} dune-istl"
     - os: linux
       addons: *gcc49
       env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab"
