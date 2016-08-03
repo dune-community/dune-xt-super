@@ -16,5 +16,5 @@ for i in ['common', 'functions', 'la', 'grid']:
     extra_deletes = '' if i == 'grid' or i == 'functions' else 'dune-grid'
     txt = tpl.safe_substitute(project_name=module, slug='dune-community/{}'.format(module),
                      authors=vars.authors, modules_to_delete=vars.modules_to_delete,
-                     extra_deletes=extra_deletes)
+                     extra_deletes=extra_deletes, xt_suffix=i)
     open(outname, 'wt').write(txt)
