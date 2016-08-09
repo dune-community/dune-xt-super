@@ -5,14 +5,19 @@
 # Authors:
 #   Rene Milk       (2016)
 
-sudo: false
+sudo: required
 dist: trusty
 language: generic
+
+before_script:
+  # workaround for gnutls bug is using git built against curl-openssl
+  - sudo -E add-apt-repository -y ppa:pymor/travis && sudo -E aptitude update && sudo -E aptitude install git -yq
 
 script:
   - cd ${TRAVIS_BUILD_DIR}
   - git submodule update --init --recursive
   - git submodule status
+  - python -c "from ConfigParser import SafeConfigParser as sf ; f = sf() ; f.readfp(open('external-libraries.cfg', 'rt'))"
     
 notifications:
   email:
