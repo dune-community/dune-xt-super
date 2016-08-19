@@ -11,6 +11,7 @@ language: generic
 
 before_install:
   # workaround for gnutls bug is using git built against curl-openssl
+  - sudo -E rm /etc/apt/sources.list.d/*git*.list
   - sudo -E add-apt-repository -y ppa:pymor/travis && sudo -E aptitude update && sudo -E aptitude install git -yq
 
 script:
