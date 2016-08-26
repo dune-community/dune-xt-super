@@ -21,7 +21,7 @@
 	url = http://gitlab.dune-project.org/core/dune-geometry.git
 [submodule "dune-grid"]
 	path = dune-grid
-	url = http://gitlab.dune-project.org/core/dune-grid.git
+	url = http://gitlab.dune-project.org/rene.milk/dune-grid.git
 [submodule "dune-xt-common"]
 	path = dune-xt-common
 	url = https://github.com/dune-community/dune-xt-common.git
