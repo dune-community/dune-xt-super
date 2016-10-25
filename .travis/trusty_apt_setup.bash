@@ -1,5 +1,5 @@
 #!/bin/bash
-# workaround for https://github.com/travis-ci/travis-ci/issues/5285
+
 SUDO="sudo -E"
 ${SUDO} apt-get install -y -q python-pip python3-pip python3-pytest python-pytest
 ${SUDO} pip3 install -U requests virtualenv cpp-coveralls
