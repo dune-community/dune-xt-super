@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SUDO="sudo -E"
-${SUDO} apt-get install -y -q python-pip python3-pip python3-pytest python-pytest
+${SUDO} apt-get install -y -q python-pip python3-pip python3-pytest python-pytest libscotchparmetis-dev libmetis-dev
 ${SUDO} pip3 install -U requests virtualenv cpp-coveralls
 ${SUDO} pip install -U requests virtualenv cpp-coveralls
 ${SUDO} add-apt-repository -y ppa:renemilk/llvm 
