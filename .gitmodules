@@ -6,7 +6,7 @@
 	url = https://github.com/dune-community/local-bin.git
 [submodule "dune-common"]
 	path = dune-common
-	url = http://gitlab.dune-project.org/rene.milk/dune-common.git
+	url = http://gitlab.dune-project.org/tobias.leibner/dune-common.git
 [submodule "dune-python"]
 	path = dune-python
 	url = https://gitlab.dune-project.org/quality/dune-python.git
@@ -18,10 +18,10 @@
 	url = http://gitlab.dune-project.org/core/dune-localfunctions.git
 [submodule "dune-geometry"]
 	path = dune-geometry
-	url = http://gitlab.dune-project.org/core/dune-geometry.git
+	url = http://gitlab.dune-project.org/tobias.leibner/dune-geometry.git
 [submodule "dune-grid"]
 	path = dune-grid
-	url = http://gitlab.dune-project.org/rene.milk/dune-grid.git
+	url = http://gitlab.dune-project.org/tobias.leibner/dune-grid.git
 [submodule "dune-xt-common"]
 	path = dune-xt-common
 	url = https://github.com/dune-community/dune-xt-common.git
@@ -49,3 +49,9 @@
 [submodule "dune-pdelab"]
 	path = dune-pdelab
 	url = https://gitlab.dune-project.org/pdelab/dune-pdelab.git
+[submodule "dune-alugrid"]
+	path = dune-alugrid
+	url = https://gitlab.dune-project.org/extensions/dune-alugrid.git
+[submodule "dune-uggrid"]
+	path = dune-uggrid
+	url = https://gitlab.dune-project.org/staging/dune-uggrid.git
