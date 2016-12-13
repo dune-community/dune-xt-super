@@ -12,7 +12,7 @@
 	url = https://gitlab.dune-project.org/quality/dune-python.git
 [submodule "dune-testtools"]
 	path = dune-testtools
-	url = https://gitlab.dune-project.org/quality/dune-testtools.git
+	url = https://gitlab.dune-project.org/tobias.leibner/dune-testtools.git
 [submodule "dune-localfunctions"]
 	path = dune-localfunctions
 	url = http://gitlab.dune-project.org/core/dune-localfunctions.git
