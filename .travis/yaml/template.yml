@@ -36,10 +36,10 @@ before_install:
   # workaround for gnutls bug is using git built against curl-openssl (cannot go into apt script below)
   - sudo -E rm /etc/apt/sources.list.d/*git*.list
   - sudo -E add-apt-repository -y ppa:pymor/travis && sudo -E aptitude update && sudo -E aptitude install git -yq
-  - test -d ${SUPERDIR}/ || git clone https://github.com/dune-community/dune-xt-super.git ${SUPERDIR}/
+  - test -d ${SUPERDIR}/ || git clone --branch=python-bindings https://github.com/dune-community/dune-xt-super.git ${SUPERDIR}/
   - cd ${SUPERDIR}/
   - git submodule update --init --recursive
-  - git submodule status ; git status 
+  - git submodule status ; git status
   - ${SUPERDIR}/.travis/trusty_apt_setup.bash
   - export PATH=/usr/lib/ccache:$PATH
   - export DCTRL_ARG="--builddir=${DUNE_BUILD_DIR}  --opts=${OPTS}"
@@ -64,12 +64,12 @@ before_script:
     - ${SRC_DCTRL} ${DCTRL_ARG} --only=${MY_MODULE} bexec ${BUILD_CMD} test_binaries
     - |
      if [[ "${CC}" == "gcc"* ]] ; then
-        lcov --gcov-tool ${GCOV} -b ${SUPERDIR}/${MY_MODULE} -d ${DUNE_BUILD_DIR}/${MY_MODULE} -c -o ${HOME}/baseline.lcov --no-external --initial --quiet
+        lcov -q --gcov-tool ${GCOV} -b ${SUPERDIR}/${MY_MODULE} -d ${DUNE_BUILD_DIR}/${MY_MODULE} -c -o ${HOME}/baseline.lcov --no-external --initial
      fi
 
 script:
     - ${SRC_DCTRL} ${DCTRL_ARG} --only=${MY_MODULE} bexec ${BUILD_CMD} test
-    - ${SUPERDIR}/.travis/init_sshkey.bash ${encrypted_862ca47045d1_key} ${encrypted_862ca47045d1_iv} keys/${slug}-testlogs 
+    - ${SUPERDIR}/.travis/init_sshkey.bash ${encrypted_862ca47045d1_key} ${encrypted_862ca47045d1_iv} keys/${slug}-testlogs
     # retry this step becuase of the implicated race condition in cloning and pushing with multiple builder running in parallel
     - travis_retry ${SUPERDIR}/scripts/bash/travis_upload_test_logs.bash ${DUNE_BUILD_DIR}/${MY_MODULE}/dune/xt/*/test/
 
@@ -113,9 +113,9 @@ cache:
 
 env:
   global:
-    - MY_MODULE=${project_name} 
-    - DUNE_BUILD_DIR=${HOME}/dune_build/ 
-    - INSTALL_DIR=$HOME/dune 
+    - MY_MODULE=${project_name}
+    - DUNE_BUILD_DIR=${HOME}/dune_build/
+    - INSTALL_DIR=$HOME/dune
     - CTEST_OUTPUT_ON_FAILURE=1
     - GCOV=/usr/bin/gcov-4.9
     - SUPERDIR=${HOME}/src
@@ -134,13 +134,10 @@ matrix:
       env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete}"
     - os: linux
       addons: *gcc49
-      env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab dune-typetree ${extra_deletes} dune-istl"
-    - os: linux
-      addons: *gcc49
-      env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab"
+      env: CXX=g++-4.9 CC=gcc-4.9 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab dune-typetree ${extra_deletes} dune-istl dune-pybindxi"
 
     - os: linux
-      addons:
+      addons: &gcc5
         apt:
           sources:
           - *commonsources
@@ -149,6 +146,22 @@ matrix:
           - *commonpackages
           - ['g++-5', 'gcc-5']
       env: CXX=g++-5 CC=gcc-5 MODULES_TO_DELETE="${modules_to_delete}"
+    - os: linux
+      addons: *gcc5
+      env: CXX=g++-5 CC=gcc-5 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab dune-typetree ${extra_deletes} dune-istl dune-pybindxi"
+
+    - os: linux
+      addons: &clang38
+        apt:
+          sources:
+          - *commonsources
+          - ['ubuntu-toolchain-r-test']
+          packages:
+          - *commonpackages
+      env: CXX=clang++-3.8 CC=clang-3.8 MODULES_TO_DELETE="${modules_to_delete}" CLANG_FORMAT="/usr/bin/clang-format-3.8"
+    - os: linux
+      addons: *clang38
+      env: CXX=clang++-3.8 CC=clang-3.8 MODULES_TO_DELETE="${modules_to_delete} dune-fem dune-pdelab dune-typetree ${extra_deletes} dune-istl dune-pybindxi" CLANG_FORMAT="/usr/bin/clang-format-3.8"
 
     - os: linux
       addons:
@@ -158,26 +171,5 @@ matrix:
           - ['ubuntu-toolchain-r-test']
           packages:
           - *commonpackages
-      env: CXX=clang++-3.8 CC=clang-3.8 MODULES_TO_DELETE="${modules_to_delete}" CLANG_FORMAT="/usr/bin/clang-format-3.8"
-
-    - os: linux
-      addons:
-        apt:
-          sources:
-          - *commonsources
-          - ['ubuntu-toolchain-r-test'] 
-          packages:
-          - *commonpackages
       # fake last module to delete to distinguish testlogs
       env: OPTS=config.opts/travis.make BUILD_CMD="make -k -j2" CXX=clang++-3.8 CC=clang-3.8 MODULES_TO_DELETE="${modules_to_delete} with-make"
-
-    #- os: linux
-      #addons:
-        #apt:
-          #sources:
-          #- *commonsources
-          #- ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
-          #packages:
-          #- *commonpackages
-          #- ['clang-3.8']
-      #env: CXX=clang++-3.8 CC=clang-3.8 MODULES_TO_DELETE="${modules_to_delete}"
