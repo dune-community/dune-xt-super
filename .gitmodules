@@ -51,7 +51,7 @@
 	url = https://gitlab.dune-project.org/pdelab/dune-pdelab.git
 [submodule "dune-alugrid"]
 	path = dune-alugrid
-	url = https://gitlab.dune-project.org/extensions/dune-alugrid.git
+	url = https://gitlab.dune-project.org/extensions/dune-alugrid
 [submodule "dune-uggrid"]
 	path = dune-uggrid
 	url = https://gitlab.dune-project.org/staging/dune-uggrid.git
