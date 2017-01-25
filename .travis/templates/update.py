@@ -130,13 +130,21 @@ if __name__ == '__main__':
 
     for i in ['common', 'functions', 'la', 'grid']:
         module = 'dune-xt-{}'.format(i)
-        #if _is_dirty(module_dir):
-            #print('Skipping {} because it is dirty'.format(module))
-            #continue
+        module_dir = os.path.join(superdir, module)
+        branch = os.environ.get('TRAVIS_BRANCH', 'master')
+        _update_docker(scriptdir, 'dune-xt-docker/Dockerfile.in', module, lambda k: '{}/Dockerfile'.format(k),
+                       branch=branch)
+        if _is_dirty(module_dir):
+            print('Skipping {} because it is dirty'.format(module))
+            continue
+        if 'TRAVIS' in os.environ.keys():
+            logging.info('Skipping templates because not on travis')
+            continue
         for tpl, outname in (('travis.yml.in', lambda m: path.join(superdir, m, '.travis.yml')),
                             ('dune-xt-docker/after_script.bash.in', lambda m: path.join(superdir, m, '.travis.after_script.bash')),
                             ('dune-xt-docker/script.bash.in', lambda m: path.join(superdir, m, '.travis.script.bash'))):
             _update_plain(scriptdir, tpl, module, outname)
-        _update_docker(scriptdir, 'dune-xt-docker/Dockerfile.in', module, lambda k: '{}/Dockerfile'.format(k))
-        module_dir = os.path.join(superdir, module)
-        _commit(module_dir, message)
+            _commit(module_dir, message)
+
+
+

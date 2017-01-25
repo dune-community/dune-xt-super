@@ -19,6 +19,11 @@ script:
   - git submodule update --init --recursive
   - git submodule status
   - python -c "from ConfigParser import SafeConfigParser as sf ; f = sf() ; f.readfp(open('external-libraries.cfg', 'rt'))"
+  - |
+    if [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
+        docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
+        ./.travis/templates/update_image.py ${COMPILER} ${TRAVIS_BRANCH}
+    fi
 
 git:
   # we do that manually in script section to be able to use our own git binary
@@ -28,3 +33,7 @@ notifications:
   email:
     on_success: change
     on_failure: change
+env:
+  global:
+    - secure: "f36b+f5pVhHo5sUoJ5Uh/iJ6cyPqD3d2t3q0j52nmOnI60HI8FiX4J8+WOZ6ySPfXpWnx9tOFkQTsLcxhiQp9Fp7Zkc4FQk1xTHKcjvgK0CezBamozDfXgiUll8KUMVNc7rxouHM7hDr/yPjTsPph67Nf0xtqZ/MadUzVU3SCHU9QrsYOF5O7udi2ZBihfKKaspEtHa3GnlCjaDp7odZDqIPUakfGG9FoTwzuoEUNa3ZNy8DyIUmeqqn9QBZxloIhoROb09Ri+cYuXLwSIOuBXnYU5SFuf2xJ9+Zi/xPQ74SrVRVwBtrbYWyoRWn78tWroEp8uvvmxnIErT344Hoyd0NJ9RECTSyBiWgENRcm8w+XXg8HnoGQC+VVJv0Fv+XhZEUib720HY77L6ll1eIoGUXh+GZd/ab2f23j89Tewcpmnat046GknmFcUITmjq7IlwLAQ6f1poAdl3S6w2UoEdJ/bYrn+3ed/3h+XA0wmPKu9yWfOYZJ+mATlv9o83Xi6UBLBTuX+8wo6ey26tHadF0pUIEZX575cRvZpihQ99lfoUTeyNAYwAr8W93RMnLASiTmv7W4SJkOLgHLrFvuv72jyVxrT6EjMl89T6I+D7BVg4nUF/lqnq5H3EplQAsskMKxAQ1n2m+h7R1LO7Dcsm3mGxI4L8qHXPpDJCpgqw="
+    - secure: "MGLn2s0B5EIDj4JujnLzQnFGa/qge7VdGKls8H4YSOwxXCTrfQxGBw1SzRGpQD+vQdy+hJfmjrrySnrgGpjg9ohHViyh01pn+hYX7gpdVYvM3aI8k2xMGofG1bylsn649tWSXwPOmOjDQYYWoJ1MgLQ2gqBqeFyGEmg9sx9sON0W7wpU4fgsupiZQkBPCefXaDVrrz/tFPeG8PHS7s+/+lU5xR28KouqcahuQt9vLJyHrJXP8b8j9hlS7ZjGLEmFNVeyuTRa/L6plD3BjhOB+pDZR9vMGv3RO4lUSKeMAT+QhsozbIKEfWOog+cJZ1tuHLah17q24m/OPgeuFrnLmu5B5N3Lh44LB4cEDwXDlFBxSO2iymQsIsjSGinujWWx9GcEBUwBDj46luDSABWTJ6O3Hj7Ongi+HvCoUBNF06YZR6XD/94aKVO7yLHE88fonZcsO9gRljQ9fdc7USOBzOMgKI+GKIqFWFXHXzFLLEbWL0PHXVzCQ/vtKKKgWpENqyOfD0iyapKZ9ftD5W+oPorOXJdJXkCmi+HypY3ZuuROjLGP8bm3jRTaDc3kaKTHfz8IxiCQI1qoKYEtny60zdmeTaw0JYAHCgtpECFdy/8c9RHCxHEe7R9UjsQzKjSY7qWkSozrpJzAuakOfUn/2OZ8FnUu400LZHGR3Bl6x/8="
