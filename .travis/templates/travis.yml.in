@@ -1,0 +1,55 @@
+# This file is part of the ${project_name} project:
+#   https://github.com/${slug}
+# The copyright lies with the authors of this file (see below).
+# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+${authors}
+
+sudo: required
+dist: trusty
+language: generic
+services: docker
+
+before_script:
+    - export IMAGE="dunecommunity/${MY_MODULE}-testing:${DOCKER_TAG}_${TRAVIS_BRANCH}"
+    # get image with fallback to master branch of the super repo
+    - docker pull ${IMAGE} || export IMAGE="dunecommunity/${MY_MODULE}-testing:${DOCKER_TAG}_master" ; docker pull ${IMAGE}
+    - export ENV_FILE=${HOME}/env
+    - printenv | \grep TRAVIS > ${ENV_FILE}
+    - printenv | \grep encrypt >> ${ENV_FILE}
+    - printenv | \grep TOKEN >> ${ENV_FILE}
+    - export DOCKER_RUN="docker run --env-file ${ENV_FILE} -v ${TRAVIS_BUILD_DIR}:/root/src/${MY_MODULE} ${IMAGE}"
+
+script:
+    - ${DOCKER_RUN} /root/src/${MY_MODULE}/.travis.script.bash
+
+# runs independent of 'script' failure/success
+after_script:
+    - ${DOCKER_RUN} /root/src/${MY_MODULE}/.travis.after_script.bash
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+  webhooks:
+    - https://buildtimetrend.herokuapp.com/travis
+
+#after_success:
+#- coveralls
+
+branches:
+  except:
+    - gh-pages
+
+env:
+  global:
+    - MY_MODULE=${project_name}
+
+matrix:
+  include:
+    - env: DOCKER_TAG=gcc-6_full
+    - env: DOCKER_TAG=gcc-6_no_istl_no_disc
+    - env: DOCKER_TAG=gcc-6_no_disc
+    - env: DOCKER_TAG=clang-3.8_full
+
+    #- env: OPTS=config.opts/travis.make BUILD_CMD="make -k -j2" CXX=clang++-3.8 CC=clang-3.8 MODULES_TO_DELETE=" with-make"
+
