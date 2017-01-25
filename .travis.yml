@@ -22,7 +22,7 @@ script:
   - |
     if [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
         docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
-        ./.travis/templates/update_image.py ${COMPILER} ${TRAVIS_BRANCH}
+        ./.travis/templates/update.py ${COMPILER} ${TRAVIS_BRANCH}
     fi
 
 git:
