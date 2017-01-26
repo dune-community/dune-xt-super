@@ -38,7 +38,7 @@ matrix:
   include:
     - env: TRAVIS_MODULE_NAME="common"
     - env: TRAVIS_MODULE_NAME="la"
-    - env: TRAVIS_MODULE_NAME="istl"
+    - env: TRAVIS_MODULE_NAME="grid"
     - env: TRAVIS_MODULE_NAME="functions"
 
 env:
