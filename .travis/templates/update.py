@@ -127,8 +127,9 @@ if __name__ == '__main__':
     scriptdir = path.dirname(path.abspath(__file__))
     superdir = path.join(scriptdir, '..', '..')
     message = ' '.join(sys.argv[1:])
+    names = ['common', 'functions', 'la', 'grid'] if 'TRAVIS_MODULE_NAME' not in os.environ else [os.environ['TRAVIS_MODULE_NAME']]
 
-    for i in ['common', 'functions', 'la', 'grid']:
+    for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
         branch = os.environ.get('TRAVIS_BRANCH', 'master')

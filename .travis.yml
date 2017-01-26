@@ -28,11 +28,19 @@ script:
 git:
   # we do that manually in script section to be able to use our own git binary
   submodules: false
-    
+
 notifications:
   email:
     on_success: change
     on_failure: change
+
+matrix:
+  include:
+    - env: TRAVIS_MODULE_NAME="common"
+    - env: TRAVIS_MODULE_NAME="la"
+    - env: TRAVIS_MODULE_NAME="istl"
+    - env: TRAVIS_MODULE_NAME="functions"
+
 env:
   global:
     - secure: dKs7Rea7lqrQL1LfWw55NlHxpDupZ9sRpGExE0WWyOnZLtDI0m3YYLUXwwdLx7ZgfSL5+ZcSlHFtUw7s0Dk6mkXt3IcjdL2jbnb+J/lLraxAOkHqExWK5d4pZq0y/QGQnzbx3T48lEaVbrt5LfN5AacS34etx3SHCxu6ZZ4mZub2S+mKDwd1o9ZB+FMJWBZ/NVq6mgbYUiMGB6N/ybMs/oVnapnJCi9rscFv3vLHSQfKFo9bogiST94YKU3M+NPir8TqmNVb9XsCBZJQs4Fq5I5lGn/1BjbmfDMu2mQFllB77d3THI957C8YtshOIgeBa+vwJ692XpyckuO6Kbkj9bMQyYjMyBiwHEN1+Xt9idscGZ7q8cvgs4C0lCj341wi3j3vQFyT/fsHpyl6m6cnchjxKwDQRJwqUU/5JEOEbTsaImVNRMpTu1OsqFJBs+qE/QY122K4nKV64Q019grIs0VRGCi688tKftMjH/puGBsPq0FJNSyeyOeJIZLf3Sj8ZU0a0NX7Cjj7eRNO0eUPe4opI5mbfmZGFW/Lpa8N9zVy+hwel5i8aerFP/2MDKM98M8m2S86USbm3emUz2hqHPeOzKwQhCudGu53R4uOBqiNom06qRhMS0UVGvBR0cUM4FNWZ/EBB4jX3pQqOkuU0hEiyQwppXilKf7ZIvXj+5w=
