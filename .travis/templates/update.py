@@ -87,7 +87,7 @@ def _update_plain(scriptdir, tpl_file, module, outname):
 
 def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
     tag_matrix = {'gcc-6_full': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':""},
-        'gcc-6_no_istl_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab dune-typetree ${extra_deletes} dune-istl"},
+        'gcc-6_no_istl_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab dune-typetree dune-istl"},
         'gcc-6_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab"},
         'clang-3.8_full': {'cc': 'clang-3.8', 'cxx': 'clang++-3.8', 'deletes':""}}
     vars = importlib.import_module(module)
@@ -99,18 +99,12 @@ def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
         logger = logging.getLogger('{} - {}'.format(module, tag))
         modules_to_delete = '{} {}'.format(modules, vars.modules_to_delete)
         logger.debug('delete: ' + modules_to_delete)
-        if 'xt-grid' in modules_to_delete or 'xt-functions' in modules_to_delete:
-            extra_deletes = 'dune-grid dune-alugrid dune-fem dune-pdelab'
-        else:
-            extra_deletes = ''
-        logger.debug('EX: ' + extra_deletes)
-        modules_to_delete = Template(modules_to_delete).safe_substitute(extra_deletes=extra_deletes)
         tmp_dir = path.join(path.dirname(path.abspath(__file__)), module, tag)
         with autoclear_dir(tmp_dir):
             with remember_cwd(tmp_dir) as oldpwd:
                 txt = tpl.safe_substitute(project_name=module, slug='dune-community/{}'.format(module),
                                 authors=vars.authors, modules_to_delete=modules_to_delete,
-                                extra_deletes=extra_deletes, branch=branch, cc=cc, cxx=cxx)
+                                branch=branch, cc=cc, cxx=cxx)
                 outfile = outname(tmp_dir)
                 open(outfile, 'wt').write(txt)
                 branch = branch.replace('/', '_')

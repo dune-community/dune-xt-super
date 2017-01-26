@@ -23,8 +23,8 @@ ENV CC=${cc} \
 # and removes xt-la, xt-grid, xt-functions for xt-common, etc
 RUN ${DUNE_VENV_ACTIVATE} && \
     ./local/bin/download_external_libraries.py 1> /dev/null && \
-    CXX=g++ ./local/bin/build_external_libraries.py 1> /dev/null && \
-    rm -rf ${MY_MODULE} ${modules_to_delete} ${extra_deletes} && \
+    ./local/bin/build_external_libraries.py 1> /dev/null && \
+    rm -rf ${MY_MODULE} ${modules_to_delete} && \
     mkdir ${MY_MODULE} && \
     ${SRC_DCTRL} ${BLD} all
 
