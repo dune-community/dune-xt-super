@@ -11,12 +11,7 @@ WORKDIR ${SUPERDIR}
 
 ENV CC=${cc} \
     CXX=${cxx} \
-    GCOV=/usr/bin/gcov \
-    MY_MODULE=${project_name} \
-    OPTS=config.opts/travis.ninja \
-    BUILD_CMD="ninja -k 10000 -j 2" \
-    PATH=/usr/lib/ccache:${PATH} \
-    SRC_DCTRL=${SUPERDIR}/dune-common/bin/dunecontrol
+    MY_MODULE=${project_name}
 
 # run our local scripts look for an OPTS env entry
 # and ensure ${MY_MODULE} from checkout is used via clean mount point
