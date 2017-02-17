@@ -52,3 +52,6 @@
 [submodule "dune-pybindxi"]
 	path = dune-pybindxi
 	url = https://github.com/dune-community/dune-pybindxi.git
+[submodule "dune-alugrid"]
+	path = dune-alugrid
+	url = https://gitlab.dune-project.org/extensions/dune-alugrid.git
