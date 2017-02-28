@@ -87,7 +87,7 @@ def _update_plain(scriptdir, tpl_file, module, outname):
 
 def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
     tag_matrix = {'gcc-6_full': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':""},
-        'gcc-6_no_istl_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab dune-typetree dune-istl"},
+        'gcc-6_no_istl_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab dune-functions dune-typetree dune-istl"},
         'gcc-6_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab"},
         'clang-3.8_full': {'cc': 'clang-3.8', 'cxx': 'clang++-3.8', 'deletes':""}}
     vars = importlib.import_module(module)
