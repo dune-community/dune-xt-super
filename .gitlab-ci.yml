@@ -1,0 +1,39 @@
+# This file is part of the dune-xt project:
+#   https://github.com/dune-community/dune-xt-super
+# The copyright lies with the authors of this file (see below).
+# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+# Authors:
+#   Rene Milk       (2016)
+
+image: ubuntu/xenial
+
+.update_image: &update_image
+    script:
+    - git submodule update --init --recursive
+    - git submodule status
+    - export TRAVIS_BRANCH=${CI_COMMIT_REF_NAME}
+    - export TRAVIS=${GITLAB_CI}
+    - python -c "from ConfigParser import SafeConfigParser as sf ; f = sf() ; f.readfp(open('external-libraries.cfg', 'rt'))"
+    - |
+        if [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
+            docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
+            ./.travis/templates/update.py "updated travis.ymls from CI"
+        fi
+
+#notifications:
+  #email:
+    #on_success: change
+    #on_failure: change
+
+xt-common:
+    <<: *update_image
+    - variables: TRAVIS_MODULE_NAME: "common"
+xt-la:
+    <<: *update_image
+    - variables: TRAVIS_MODULE_NAME: "la"
+xt-grid:
+    <<: *update_image
+    - variables: TRAVIS_MODULE_NAME: "grid"
+xt-functions:
+    <<: *update_image
+    - variables: TRAVIS_MODULE_NAME: "functions"
