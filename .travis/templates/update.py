@@ -86,10 +86,10 @@ def _update_plain(scriptdir, tpl_file, module, outname):
 
 
 def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
-    tag_matrix = {'gcc-6_full': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':""},
-        'gcc-6_no_istl_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab dune-functions dune-typetree dune-istl"},
-        'gcc-6_no_disc': {'cc': 'gcc-6', 'cxx': 'g++-6', 'deletes':"dune-fem dune-pdelab"},
-        'clang-3.8_full': {'cc': 'clang-3.8', 'cxx': 'clang++-3.8', 'deletes':""}}
+    tag_matrix = {'gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes':""},
+        'gcc_no_istl_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab dune-functions dune-typetree dune-istl"},
+        'gcc_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab"},
+        'clang_full': {'cc': 'clang', 'cxx': 'clang++', 'deletes':""}}
     vars = importlib.import_module(module)
     tpl = Template(open(path.join(scriptdir, tpl_file), 'rt').read())
     for tag, settings in tag_matrix.items():

@@ -46,10 +46,7 @@ env:
 
 matrix:
   include:
-    - env: DOCKER_TAG=gcc-6_full
-    - env: DOCKER_TAG=gcc-6_no_istl_no_disc
-    - env: DOCKER_TAG=gcc-6_no_disc
-    - env: DOCKER_TAG=clang-3.8_full
-
-    #- env: OPTS=config.opts/travis.make BUILD_CMD="make -k -j2" CXX=clang++-3.8 CC=clang-3.8 MODULES_TO_DELETE=" with-make"
-
+    - env: DOCKER_TAG=gcc_full
+    - env: DOCKER_TAG=gcc_no_istl_no_disc
+    - env: DOCKER_TAG=gcc_no_disc
+    - env: DOCKER_TAG=clang_full
