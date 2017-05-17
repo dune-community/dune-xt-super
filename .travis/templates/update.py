@@ -108,7 +108,7 @@ def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
                 outfile = outname(tmp_dir)
                 open(outfile, 'wt').write(txt)
                 branch = branch.replace('/', '_')
-                docker_target = 'dunecommunity/{}-testing:{}_{}'.format(module, tag, branch)
+                docker_target = 'dunecommunity/{}-testing_{}:{}'.format(module, tag, branch)
 
                 _cmd(['docker', 'build', '-f', os.path.join(oldpwd, outfile),
                                     '-t', docker_target, '.'], logger)
