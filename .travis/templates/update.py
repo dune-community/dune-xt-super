@@ -63,10 +63,11 @@ def _cmd(cmd, logger):
 
 
 def _commit(dirname, message):
+    if not message:
+        raise RuntimeError('empty commit message')
     with remember_cwd(dirname):
         try:
             _ = subprocess.check_call(['git', 'commit', '.travis.yml', '-m', '[travis] {}'.format(message)])
-            _ = subprocess.check_call(['git', 'push'])
         except subprocess.CalledProcessError as er:
             print(dirname)
             print(er)
@@ -111,7 +112,7 @@ def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
                 docker_target = 'dunecommunity/{}-testing_{}:{}'.format(module, tag, branch)
 
                 _cmd(['docker', 'build', '-f', os.path.join(oldpwd, outfile),
-                                    '-t', docker_target, '.'], logger)
+                                    '-t', docker_target, tmp_dir], logger)
         _cmd(['docker', 'push', docker_target], logger)
 
 
@@ -127,19 +128,20 @@ if __name__ == '__main__':
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
         branch = os.environ.get('TRAVIS_BRANCH', 'master')
-        _update_docker(scriptdir, 'dune-xt-docker/Dockerfile.in', module, lambda k: '{}/Dockerfile'.format(k),
+        _update_docker(scriptdir, 'dune-xt-docker/Dockerfile.in', module,
+                       lambda k: '{}/Dockerfile'.format(k),
                        branch=branch)
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty'.format(module))
             continue
-        if 'TRAVIS' in os.environ.keys():
-            logging.info('Skipping templates because not on travis')
+        if 'TRAVIS' in os.environ.keys() or 'GITLAB' in os.environ.keys():
+            logging.info('Skipping templates because we are on travis')
             continue
         for tpl, outname in (('travis.yml.in', lambda m: path.join(superdir, m, '.travis.yml')),
                             ('dune-xt-docker/after_script.bash.in', lambda m: path.join(superdir, m, '.travis.after_script.bash')),
                             ('dune-xt-docker/script.bash.in', lambda m: path.join(superdir, m, '.travis.script.bash'))):
             _update_plain(scriptdir, tpl, module, outname)
-            _commit(module_dir, message)
+        _commit(module_dir, message)
 
 
 
