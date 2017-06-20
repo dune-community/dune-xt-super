@@ -19,6 +19,11 @@ script:
   - git submodule update --init --recursive
   - git submodule status
   - python -c "from ConfigParser import SafeConfigParser as sf ; f = sf() ; f.readfp(open('external-libraries.cfg', 'rt'))"
+  - |
+    if [[ "${TRAVIS_PULL_REQUEST}" == "false" ]] ; then
+        docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
+        travis_wait 50 ./.travis/templates/update.py "updated travis.ymls from CI"
+    fi
 
 git:
   # we do that manually in script section to be able to use our own git binary
@@ -29,3 +34,14 @@ notifications:
     on_success: change
     on_failure: change
 
+matrix:
+  include:
+    - env: TRAVIS_MODULE_NAME="common"
+    - env: TRAVIS_MODULE_NAME="la"
+    - env: TRAVIS_MODULE_NAME="grid"
+    - env: TRAVIS_MODULE_NAME="functions"
+
+env:
+  global:
+    - secure: dKs7Rea7lqrQL1LfWw55NlHxpDupZ9sRpGExE0WWyOnZLtDI0m3YYLUXwwdLx7ZgfSL5+ZcSlHFtUw7s0Dk6mkXt3IcjdL2jbnb+J/lLraxAOkHqExWK5d4pZq0y/QGQnzbx3T48lEaVbrt5LfN5AacS34etx3SHCxu6ZZ4mZub2S+mKDwd1o9ZB+FMJWBZ/NVq6mgbYUiMGB6N/ybMs/oVnapnJCi9rscFv3vLHSQfKFo9bogiST94YKU3M+NPir8TqmNVb9XsCBZJQs4Fq5I5lGn/1BjbmfDMu2mQFllB77d3THI957C8YtshOIgeBa+vwJ692XpyckuO6Kbkj9bMQyYjMyBiwHEN1+Xt9idscGZ7q8cvgs4C0lCj341wi3j3vQFyT/fsHpyl6m6cnchjxKwDQRJwqUU/5JEOEbTsaImVNRMpTu1OsqFJBs+qE/QY122K4nKV64Q019grIs0VRGCi688tKftMjH/puGBsPq0FJNSyeyOeJIZLf3Sj8ZU0a0NX7Cjj7eRNO0eUPe4opI5mbfmZGFW/Lpa8N9zVy+hwel5i8aerFP/2MDKM98M8m2S86USbm3emUz2hqHPeOzKwQhCudGu53R4uOBqiNom06qRhMS0UVGvBR0cUM4FNWZ/EBB4jX3pQqOkuU0hEiyQwppXilKf7ZIvXj+5w=
+    - secure: Z4iEqUV3ltTi+Cg7D058QtDhB0TS1IlXrOD9d+KdV9bU8Ii1aZ1RsiJwmj7EV+l9Ucswk6cmya1YUdt+IfYTuOCQVGx0q6yof1enOq5Vd++8Ndgd6j22apQcrDblUweGNJnHrxnOtdpSbrNkPot1PgG1man297OoJNKvrdeor1cEVHVbGSc0I/W96KijW4KIo7BYuIwFFy87gkCbBO6cGYiIiYYkHOcsUVbyGfgJGEj2wayFKtS4Cd8flXaMkpfCKnMjXmSibj3Bb+QvDzsaOZ+MP3+Pw8lIw8zQDFZllatJr0bYmgRxWRi9AzLCZpR1xI9VKKs6m70SdlABQIUKNSdn7j3ncAOMux178eUfZGDspwiPZrvfDyyI0qAZT5hzaV+k1TRmDwfJ0OoByYjsmkpahj0LkC0OxJ+fCOi0ck+l16RUm7Mr4SfF8+LW+OoOZSZZiDkz2gvVyaifGAVqeqnsSdn42AfAqn5T1wiC7NUvA4G2sI7tSpn/XnLy2zScEoJ089QUCRTJCybOj0tapx9rCRKzC3NIVcMQIioVDzxQWVjUbAH9ytKD3T2gnuvjILllGhhFbfIup1NFfm9mGIldjvVaxFp3eNzQ62rZ9oEzTvmG0pBeyYZYSJvUjuAg1c/8CyyI12bHeNkNYNxxfeIXeOfIFc7rJg6lvlfO9dw=
