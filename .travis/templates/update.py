@@ -59,6 +59,7 @@ def _cmd(cmd, logger):
     except subprocess.CalledProcessError as cp:
         logger.error(cp.output)
         logger.error('Failed: {}'.format(' '.join(cmd)))
+        logger.error('Make sure the pushers group has write access to this repo on hub.cocker.com!')
         raise cp
 
 
