@@ -10,6 +10,7 @@ import subprocess
 import sys
 import logging
 import tempfile
+import time
 
 
 @contextlib.contextmanager
@@ -36,6 +37,28 @@ def autoclear_dir(dirname):
         shutil.rmtree(dirname)
 
 
+class Timer(object):
+    def __init__(self, section, log):
+        self._section = section
+        self._start = 0
+        self._log = log
+        self.time_func = time.time
+
+    def start(self):
+        self.dt = -1
+        self._start = self.time_func()
+
+    def stop(self):
+        self.dt = self.time_func() - self._start
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, type_, value, traceback):
+        self.stop()
+        self._log('Execution of {} took {} (s)'.format(self._section, self.dt))
+
+
 def _is_dirty(dirname):
     with remember_cwd(dirname):
         try:
@@ -52,7 +75,7 @@ def _is_dirty(dirname):
 
 
 def _cmd(cmd, logger):
-    logger.info(' '.join(cmd))
+    logger.debug(' '.join(cmd))
     try:
         out = subprocess.check_output(cmd, stderr=subprocess.STDOUT, universal_newlines=True)
         logger.debug(out)
@@ -111,10 +134,11 @@ def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
                 open(outfile, 'wt').write(txt)
                 branch = branch.replace('/', '_')
                 docker_target = 'dunecommunity/{}-testing_{}:{}'.format(module, tag, branch)
-
-                _cmd(['docker', 'build', '-f', os.path.join(oldpwd, outfile),
+                with Timer('docker build ' + docker_target, logger.info):
+                    _cmd(['docker', 'build', '--rm=False', '-f', os.path.join(oldpwd, outfile),
                                     '-t', docker_target, tmp_dir], logger)
-        _cmd(['docker', 'push', docker_target], logger)
+        with Timer('docker push ' + docker_target, logger.info):
+            _cmd(['docker', 'push', docker_target], logger)
 
 
 if __name__ == '__main__':
@@ -133,7 +157,7 @@ if __name__ == '__main__':
                        lambda k: '{}/Dockerfile'.format(k),
                        branch=branch)
         if _is_dirty(module_dir):
-            print('Skipping {} because it is dirty'.format(module))
+            print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
         if 'TRAVIS' in os.environ.keys() or 'GITLAB' in os.environ.keys():
             logging.info('Skipping templates because we are on travis')
