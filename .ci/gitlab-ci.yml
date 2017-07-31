@@ -8,7 +8,7 @@
 image: dunecommunity/gitlabci_dockerindocker
 
 stage:
-    install:
+    before_script:
     - pip3 install docker
 
     script:
@@ -21,13 +21,9 @@ stage:
         docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
         python3 ./.ci/templates/update.py "updated travis.ymls from CI"
 
-#notifications:
-  #email:
-    #on_success: change
-    #on_failure: change
+# notifications: Not implemented, see
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/23404
 
 services:
 - docker:dind
 
-before_script:
-- docker info
