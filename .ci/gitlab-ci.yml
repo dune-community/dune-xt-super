@@ -8,15 +8,18 @@
 image: dunecommunity/gitlabci_dockerindocker
 
 stage:
+    install:
+    - pip3 install docker
+
     script:
     - git submodule update --init --recursive
     - git submodule status
     - export TRAVIS_BRANCH=${CI_COMMIT_REF_NAME}
     - export TRAVIS=${GITLAB_CI}
-    - python -c "from ConfigParser import SafeConfigParser as sf ; f = sf() ; f.readfp(open('external-libraries.cfg', 'rt'))"
+    - python3 -c "from ConfigParser import SafeConfigParser as sf ; f = sf() ; f.readfp(open('external-libraries.cfg', 'rt'))"
     - |
         docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
-        ./.ci/templates/update.py "updated travis.ymls from CI"
+        python3 ./.ci/templates/update.py "updated travis.ymls from CI"
 
 #notifications:
   #email:
