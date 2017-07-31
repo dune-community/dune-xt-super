@@ -115,7 +115,7 @@ def _update_plain(scriptdir, tpl_file, module, outname):
         os.chmod(outfile, stat.S_IXUSR | stat.S_IWUSR | stat.S_IREAD )
 
 
-def _build_base(scriptdir, cc, cxx, branch, outname):
+def _build_base(scriptdir, cc, cxx, commit, outname):
     client = docker.from_env(version='auto')
     tag = 'base_{}'.format(cc)
     tmp_dir = path.join(path.dirname(path.abspath(__file__)), tag)
@@ -123,11 +123,11 @@ def _build_base(scriptdir, cc, cxx, branch, outname):
     tpl = Template(open(path.join(scriptdir, 'dune-xt-docker_base/Dockerfile.in'), 'rt').read())
     with autoclear_dir(tmp_dir):
         with remember_cwd(tmp_dir) as oldpwd:
-            txt = tpl.safe_substitute(branch=branch, cc=cc, cxx=cxx)
+            txt = tpl.safe_substitute(commit=commit, cc=cc, cxx=cxx)
             outfile = outname(tmp_dir)
             open(outfile, 'wt').write(txt)
-            branch = branch.replace('/', '_')
-            docker_target = 'dunecommunity/dune-xt-docker_{}:{}'.format(tag, branch)
+            commit = commit.replace('/', '_')
+            docker_target = 'dunecommunity/dune-xt-docker_{}:{}'.format(tag, commit)
             with Timer('docker build ' + docker_target, logger.info):
                 client.images.build(rm=False, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                       tag=docker_target, path=tmp_dir)
@@ -135,7 +135,7 @@ def _build_base(scriptdir, cc, cxx, branch, outname):
         _cmd(['docker', 'push', docker_target], logger)
 
 
-def _build_combination(scriptdir, settings, module, vars, tag, branch, outname, tpl_file):
+def _build_combination(scriptdir, settings, module, vars, tag, commit, outname, tpl_file):
     client = docker.from_env(version='auto')
     cc = settings['cc']
     cxx = settings['cxx']
@@ -149,11 +149,11 @@ def _build_combination(scriptdir, settings, module, vars, tag, branch, outname, 
         with remember_cwd(tmp_dir) as oldpwd:
             txt = tpl.safe_substitute(project_name=module, slug='dune-community/{}'.format(module),
                                       authors=vars.authors, modules_to_delete=modules_to_delete,
-                                      branch=branch, cc=cc, cxx=cxx)
+                                      commit=commit, cc=cc, cxx=cxx)
             outfile = outname(tmp_dir)
             open(outfile, 'wt').write(txt)
-            branch = branch.replace('/', '_')
-            docker_target = 'dunecommunity/{}-testing_{}:{}'.format(module, tag, branch)
+            commit = commit.replace('/', '_')
+            docker_target = 'dunecommunity/{}-testing_{}:{}'.format(module, tag, commit)
             with Timer('docker build ' + docker_target, logger.info):
                 client.images.build(rm=False, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                       tag=docker_target, path=tmp_dir)
@@ -161,7 +161,7 @@ def _build_combination(scriptdir, settings, module, vars, tag, branch, outname, 
         _cmd(['docker', 'push', docker_target], logger)
 
 
-def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
+def _update_docker(scriptdir, tpl_file, module, outname, commit='master'):
     tag_matrix = {'gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes':""},
         'gcc_no_istl_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab dune-functions dune-typetree dune-istl"},
         'gcc_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab"},
@@ -170,9 +170,9 @@ def _update_docker(scriptdir, tpl_file, module, outname, branch='master'):
 
     all_compilers = {(f['cc'], f['cxx']) for f in tag_matrix.values()}
     for cc, cxx in all_compilers:
-        _build_base(scriptdir, cc, cxx, branch, outname)
+        _build_base(scriptdir, cc, cxx, commit, outname)
     for tag, settings in tag_matrix.items():
-        _build_combination(scriptdir, settings, module, vars, tag, branch, outname, tpl_file)
+        _build_combination(scriptdir, settings, module, vars, tag, commit, outname, tpl_file)
 
 
 if __name__ == '__main__':
@@ -182,14 +182,17 @@ if __name__ == '__main__':
     superdir = path.join(scriptdir, '..', '..')
     message = ' '.join(sys.argv[1:])
     names = ['common', 'functions', 'la', 'grid'] if 'TRAVIS_MODULE_NAME' not in os.environ else [os.environ['TRAVIS_MODULE_NAME']]
-
+    try:
+        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+    except subprocess.CalledProcessError:
+        head = 'master'
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
-        branch = os.environ.get('TRAVIS_BRANCH', 'master')
+        commit = os.environ.get('CI_COMMIT_SHA', head)
         _update_docker(scriptdir, 'dune-xt-docker/Dockerfile.in', module,
                        lambda k: '{}/Dockerfile'.format(k),
-                       branch=branch)
+                       commit=commit)
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
