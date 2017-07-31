@@ -24,3 +24,7 @@ notifications:
   email:
     on_success: change
     on_failure: change
+
+git:
+  # we do that manually in script section to be able to use our own git binary
+  submodules: false
