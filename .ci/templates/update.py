@@ -132,7 +132,7 @@ def _build_base(scriptdir, cc, cxx, commit, outname):
                 client.images.build(rm=False, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                       tag=docker_target, path=tmp_dir)
     with Timer('docker push ' + docker_target, logger.info):
-        _cmd(['docker', 'push', docker_target], logger)
+        client.images.push(docker_target)
 
 
 def _build_combination(scriptdir, settings, module, vars, tag, commit, outname, tpl_file):
@@ -158,7 +158,7 @@ def _build_combination(scriptdir, settings, module, vars, tag, commit, outname, 
                 client.images.build(rm=False, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                       tag=docker_target, path=tmp_dir)
     with Timer('docker push ' + docker_target, logger.info):
-        _cmd(['docker', 'push', docker_target], logger)
+        client.images.push(docker_target)
 
 
 def _update_docker(scriptdir, tpl_file, module, outname, commit='master'):
@@ -183,7 +183,7 @@ if __name__ == '__main__':
     message = ' '.join(sys.argv[1:])
     names = ['common', 'functions', 'la', 'grid'] if 'TRAVIS_MODULE_NAME' not in os.environ else [os.environ['TRAVIS_MODULE_NAME']]
     try:
-        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+        head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], universal_newlines=True).strip()
     except subprocess.CalledProcessError:
         head = 'master'
     for i in names:
