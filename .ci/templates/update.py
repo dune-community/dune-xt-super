@@ -12,10 +12,9 @@ import logging
 import tempfile
 import time
 try:
-    import machine
     import docker
 except ImportError:
-    print('missing module: pip install python-docker-machine')
+    print('missing module: pip install docker')
     sys.exit(1)
 
 
