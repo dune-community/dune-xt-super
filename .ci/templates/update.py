@@ -64,6 +64,9 @@ class Timer(object):
         self._log('Execution of {} took {} (s)'.format(self._section, self.dt))
 
 
+class CommitMessageMissing(RuntimeError): pass
+
+
 def _is_dirty(dirname):
     with remember_cwd(dirname):
         try:
@@ -95,7 +98,7 @@ def _commit(dirname, message):
     if not _is_dirty(dirname):
         return
     if not message or message == '':
-        raise RuntimeError('empty commit message')
+        raise CommitMessageMissing(dirname)
     with remember_cwd(dirname):
         try:
             _ = subprocess.check_call(['git', 'commit', '.travis.yml',
@@ -210,7 +213,6 @@ if __name__ == '__main__':
                             ('dune-xt-docker/after_script.bash.in', lambda m: path.join(superdir, m, '.travis.after_script.bash')),
                             ('dune-xt-docker/script.bash.in', lambda m: path.join(superdir, m, '.travis.script.bash'))):
             _update_plain(scriptdir, tpl, module, outname)
+
+    for i in names:
         _commit(module_dir, message)
-
-
-
