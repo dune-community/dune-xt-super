@@ -12,6 +12,7 @@ stage:
     - pip3 install docker
 
     script:
+    - git submodule sync --recursive
     - git submodule update --init --recursive
     - git submodule status
     - export TRAVIS_BRANCH=${CI_COMMIT_REF_NAME}
