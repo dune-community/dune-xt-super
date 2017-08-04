@@ -1,8 +1,10 @@
-# This file is part of the ${project_name} project:
-#   https://github.com/${slug}
-# The copyright lies with the authors of this file (see below).
-# License: BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
-${authors}
+# This file is part of the {{project_name}} project:
+#   https://github.com/{{slug}}
+# Copyright 2009-2017 dune-xt-functions developers and contributors. All rights reserved.
+# License: Dual licensed as BSD 2-Clause License (http://opensource.org/licenses/BSD-2-Clause)
+#      or  GPL-2.0+ (http://opensource.org/licenses/gpl-license)
+#          with "runtime exception" (http://www.dune-project.org/license.html)
+{{authors}}
 
 sudo: required
 dist: trusty
@@ -42,11 +44,16 @@ branches:
 
 env:
   global:
-    - MY_MODULE=${project_name}
+    - MY_MODULE={{project_name}}
 
 matrix:
   include:
-    - env: DOCKER_TAG=gcc_full
-    - env: DOCKER_TAG=gcc_no_istl_no_disc
-    - env: DOCKER_TAG=gcc_no_disc
-    - env: DOCKER_TAG=clang_full
+  {%- for tag in docker_tags %}
+    {%- if bin_count > 0 %}
+      {%- for count in range(bin_count) %}
+        - env: DOCKER_TAG={{tag}} TESTS={{count}}
+      {%- endfor %}
+    {% else %}
+      - env: DOCKER_TAG={{tag}}
+    {%- endif %}
+  {%- endfor %}

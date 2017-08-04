@@ -5,7 +5,8 @@ import importlib
 import os
 import stat
 import contextlib
-from string import Template
+import jinja2
+from string import Template as stringTemplate
 import subprocess
 import sys
 import logging
@@ -95,6 +96,8 @@ def _cmd(cmd, logger):
 
 
 def _commit(dirname, message):
+    logger = logging.getLogger('{}'.format(os.path.basename(dirname)))
+    logger.info('committing...')
     if not _is_dirty(dirname):
         return
     if not message or message == '':
@@ -107,15 +110,16 @@ def _commit(dirname, message):
         except subprocess.CalledProcessError as er:
             print(dirname)
             print(er)
+            logger.error('committing... failed')
 
 
 def _update_plain(scriptdir, tpl_file, module, outname):
     vars = importlib.import_module(module)
-    tpl = Template(open(path.join(scriptdir, tpl_file), 'rt').read())
-    txt = tpl.safe_substitute(project_name=module, slug='dune-community/{}'.format(module),
-                    authors=vars.authors, modules_to_delete=vars.modules_to_delete,
-                    extra_deletes=[])
+    tpl = jinja2.Template(open(path.join(scriptdir, tpl_file), 'rt').read())
     outfile = outname(module)
+    txt = tpl.render(project_name=module, slug='dune-community/{}'.format(module),
+                    extra_deletes=[],
+                    **vars.__dict__)
     open(outfile, 'wt').write(txt)
     if outfile.endswith('.bash'):
         os.chmod(outfile, stat.S_IXUSR | stat.S_IWUSR | stat.S_IREAD )
@@ -126,7 +130,7 @@ def _build_base(scriptdir, cc, cxx, commit, outname, refname):
     tag = 'base_{}'.format(cc)
     tmp_dir = path.join(path.dirname(path.abspath(__file__)), tag)
     logger = logging.getLogger('{}'.format(tag))
-    tpl = Template(open(path.join(scriptdir, 'dune-xt-docker_base/Dockerfile.in'), 'rt').read())
+    tpl = stringTemplate(open(path.join(scriptdir, 'dune-xt-docker_base/Dockerfile.in'), 'rt').read())
     repo = 'dunecommunity/dune-xt-docker_{}'.format(tag)
     with autoclear_dir(tmp_dir):
         with remember_cwd(tmp_dir) as oldpwd:
@@ -192,17 +196,17 @@ if __name__ == '__main__':
 
     all_compilers = {(f['cc'], f['cxx']) for f in tag_matrix.values()}
     for cc, cxx in all_compilers:
-        _build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname)
+        pass#_build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname)
 
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
 
-        _build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
-                           tpl_file='dune-xt-docker/Dockerfile.in',
-                           module=module,
-                       outname=lambda k: '{}/Dockerfile'.format(k),
-                       commit=commit, refname=refname)
+        #_build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
+                           #tpl_file='dune-xt-docker/Dockerfile.in',
+                           #module=module,
+                       #outname=lambda k: '{}/Dockerfile'.format(k),
+                       #commit=commit, refname=refname)
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
@@ -215,4 +219,6 @@ if __name__ == '__main__':
             _update_plain(scriptdir, tpl, module, outname)
 
     for i in names:
+        module = 'dune-xt-{}'.format(i)
+        module_dir = os.path.join(superdir, module)
         _commit(module_dir, message)
