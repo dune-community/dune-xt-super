@@ -9,7 +9,7 @@ image: dunecommunity/gitlabci_dockerindocker
 
 stage:
     before_script:
-    - pip3 install docker
+    - pip3 install docker jinja2
 
     script:
     - git submodule sync --recursive
