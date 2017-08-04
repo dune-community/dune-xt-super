@@ -196,17 +196,17 @@ if __name__ == '__main__':
 
     all_compilers = {(f['cc'], f['cxx']) for f in tag_matrix.values()}
     for cc, cxx in all_compilers:
-        pass#_build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname)
+        _build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname)
 
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
 
-        #_build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
-                           #tpl_file='dune-xt-docker/Dockerfile.in',
-                           #module=module,
-                       #outname=lambda k: '{}/Dockerfile'.format(k),
-                       #commit=commit, refname=refname)
+        _build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
+                           tpl_file='dune-xt-docker/Dockerfile.in',
+                           module=module,
+                       outname=lambda k: '{}/Dockerfile'.format(k),
+                       commit=commit, refname=refname)
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
