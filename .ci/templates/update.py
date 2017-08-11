@@ -157,7 +157,7 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
         logger = logging.getLogger('{} - {}'.format(module, tag))
         modules_to_delete = '{} {}'.format(modules, vars.modules_to_delete)
         logger.debug('delete: ' + modules_to_delete)
-        tpl = Template(open(path.join(scriptdir, tpl_file), 'rt').read())
+        tpl = stringTemplate(open(path.join(scriptdir, tpl_file), 'rt').read())
         repo = 'dunecommunity/{}-testing_{}'.format(module, tag)
 
         with autoclear_dir(tmp_dir):
