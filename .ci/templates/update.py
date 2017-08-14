@@ -139,7 +139,7 @@ def _build_base(scriptdir, cc, cxx, commit, outname, refname):
             open(outfile, 'wt').write(txt)
 
             with Timer('docker build ', logger.info):
-                img = client.images.build(rm=False, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
+                img = client.images.build(rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                                     tag='{}:{}'.format(repo, commit), path=tmp_dir)
                 img.tag(repo, refname)
     with Timer('docker push ', logger.info):
@@ -169,7 +169,7 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
                 open(outfile, 'wt').write(txt)
 
                 with Timer('docker build ', logger.info):
-                    img = client.images.build(rm=False, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
+                    img = client.images.build(rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                           tag='{}:{}'.format(repo, commit), path=tmp_dir)
                     img.tag(repo, refname)
         with Timer('docker push ', logger.info):
