@@ -6,6 +6,7 @@ WORKDIR ${SUPERDIR}
 
 ENV MY_MODULE=${project_name}
 
+RUN echo dune-xt-docker_base_${cc}:${commit} && df -h
 # run our local scripts look for an OPTS env entry
 # and ensure ${MY_MODULE} from checkout is used via clean mount point
 # and removes xt-la, xt-grid, xt-functions for xt-common, etc

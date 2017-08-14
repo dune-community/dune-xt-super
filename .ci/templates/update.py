@@ -160,6 +160,8 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
         tpl = stringTemplate(open(path.join(scriptdir, tpl_file), 'rt').read())
         repo = 'dunecommunity/{}-testing_{}'.format(module, tag)
 
+        print(subprocess.check_output(['df', '-h'], universal_newlines=True))
+
         with autoclear_dir(tmp_dir):
             with remember_cwd(tmp_dir) as oldpwd:
                 txt = tpl.safe_substitute(project_name=module, slug='dune-community/{}'.format(module),
@@ -222,4 +224,4 @@ if __name__ == '__main__':
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
-        _commit(module_dir, message)
+        #_commit(module_dir, message)
