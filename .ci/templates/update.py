@@ -104,6 +104,8 @@ def _commit(dirname, message):
         raise CommitMessageMissing(dirname)
     with remember_cwd(dirname):
         try:
+            _ = subprocess.check_call(['git', 'add', '.travis.yml', '.travis.make_env_file.py',
+                                       '.travis.after_script.bash', '.travis.script.bash'])
             _ = subprocess.check_call(['git', 'commit', '.travis.yml', '.travis.make_env_file.py',
                                        '.travis.after_script.bash', '.travis.script.bash',
                                        '-m', '{}'.format(message)])
