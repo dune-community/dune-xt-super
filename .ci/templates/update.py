@@ -146,6 +146,7 @@ def _build_base(scriptdir, cc, cxx, commit, outname, refname):
                 img.tag(repo, refname)
     with Timer('docker push ', logger.info):
         client.images.push(repo)
+    client.images.remove(img)
 
 
 def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit, refname):
@@ -176,6 +177,7 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
                     img.tag(repo, refname)
         with Timer('docker push ', logger.info):
             client.images.push(repo)
+        client.images.remove(img)
 
 
 if __name__ == '__main__':
