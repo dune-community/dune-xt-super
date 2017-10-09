@@ -146,11 +146,12 @@ def _build_base(scriptdir, cc, cxx, commit, outname, refname):
                 img.tag(repo, refname)
     with Timer('docker push ', logger.info):
         client.images.push(repo)
-    client.images.remove(img.id)
+    return img
 
 
 def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit, refname):
     client = docker.from_env(version='auto')
+    imgs = []
     for tag, settings in tag_matrix.items():
         cc = settings['cc']
         cxx = settings['cxx']
@@ -177,7 +178,8 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
                     img.tag(repo, refname)
         with Timer('docker push ', logger.info):
             client.images.push(repo)
-        client.images.remove(img.id)
+        imgs.append(img)
+    return imgs
 
 
 if __name__ == '__main__':
@@ -199,14 +201,14 @@ if __name__ == '__main__':
 
 
     all_compilers = {(f['cc'], f['cxx']) for f in tag_matrix.values()}
-    for cc, cxx in all_compilers:
-        _build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname)
+    base_imgs = [_build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname) for cc, cxx in all_compilers]
 
+    module_imgs = []
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
 
-        _build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
+        module_imgs += _build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
                            tpl_file='dune-xt-docker/Dockerfile.in',
                            module=module,
                        outname=lambda k: '{}/Dockerfile'.format(k),
@@ -223,6 +225,10 @@ if __name__ == '__main__':
                             ('dune-xt-docker/make_env_file.py', lambda m: path.join(superdir, m, '.travis.make_env_file.py'))):
             _update_plain(scriptdir, tpl, module, outname)
 
+    for m in module_imgs:
+        client.images.remove(m.id)
+    for m in base_imgs:
+        client.images.remove(m.id)
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
