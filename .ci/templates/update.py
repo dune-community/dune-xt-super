@@ -68,6 +68,31 @@ class Timer(object):
 class CommitMessageMissing(RuntimeError): pass
 
 
+def _docker_build(client, **kwargs):
+    resp = client.api.build(**kwargs)
+    if isinstance(resp, six.string_types):
+        return client.images.get(resp)
+    last_event = None
+    image_id = None
+    output = []
+    for chunk in json_stream(resp):
+        if 'error' in chunk:
+            msg = chunk['error'] + '\n' + ''.join(output)
+            raise docker.errors.BuildError(msg)
+        if 'stream' in chunk:
+            output.append(chunk['stream'])
+            match = re.search(
+                r'(^Successfully built |sha256:)([0-9a-f]+)$',
+                chunk['stream']
+            )
+            if match:
+                image_id = match.group(2)
+        last_event = chunk
+    if image_id:
+        return client.images.get(image_id)
+    raise docker.errors.BuildError(last_event or 'Unknown')
+
+
 def _is_dirty(dirname):
     with remember_cwd(dirname):
         try:
@@ -141,7 +166,7 @@ def _build_base(scriptdir, cc, cxx, commit, outname, refname):
             open(outfile, 'wt').write(txt)
 
             with Timer('docker build ', logger.info):
-                img = client.images.build(rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
+                img = _docker_build(client, rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                                     tag='{}:{}'.format(repo, commit), path=tmp_dir)
                 img.tag(repo, refname)
     with Timer('docker push ', logger.info):
@@ -173,7 +198,7 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
                 open(outfile, 'wt').write(txt)
 
                 with Timer('docker build ', logger.info):
-                    img = client.images.build(rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
+                    img = _docker_build(client, rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
                           tag='{}:{}'.format(repo, commit), path=tmp_dir)
                     img.tag(repo, refname)
         with Timer('docker push ', logger.info):
