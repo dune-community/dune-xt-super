@@ -212,6 +212,7 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
 
 if __name__ == '__main__':
     level = logging.DEBUG if '-v' in sys.argv else logging.INFO
+    skip_docker = '-s' in sys.argv
     logging.basicConfig(level=level)
     scriptdir = path.dirname(path.abspath(__file__))
     superdir = path.join(scriptdir, '..', '..')
@@ -229,18 +230,22 @@ if __name__ == '__main__':
 
 
     all_compilers = {(f['cc'], f['cxx']) for f in tag_matrix.values()}
-    base_imgs = [_build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname) for cc, cxx in all_compilers]
+    if not skip_docker:
+        base_imgs = [_build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname) for cc, cxx in all_compilers]
+    else:
+        base_imgs = []
 
     module_imgs = []
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
 
-        module_imgs += _build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
-                           tpl_file='dune-xt-docker/Dockerfile.in',
-                           module=module,
-                       outname=lambda k: '{}/Dockerfile'.format(k),
-                       commit=commit, refname=refname)
+        if not skip_docker:
+            module_imgs += _build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
+                            tpl_file='dune-xt-docker/Dockerfile.in',
+                            module=module,
+                        outname=lambda k: '{}/Dockerfile'.format(k),
+                        commit=commit, refname=refname)
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
@@ -253,12 +258,14 @@ if __name__ == '__main__':
                             ('dune-xt-docker/make_env_file.py', lambda m: path.join(superdir, m, '.travis.make_env_file.py'))):
             _update_plain(scriptdir, tpl, module, outname)
 
+    for i in names:
+        module = 'dune-xt-{}'.format(i)
+        module_dir = os.path.join(superdir, module)
+        _commit(module_dir, message)
+    if skip_docker:
+        sys.exit(0)
     client = docker.from_env(version='auto')
     for m in module_imgs:
         client.images.remove(m.id)
     for m in base_imgs:
         client.images.remove(m.id)
-    for i in names:
-        module = 'dune-xt-{}'.format(i)
-        module_dir = os.path.join(superdir, module)
-        _commit(module_dir, message)
