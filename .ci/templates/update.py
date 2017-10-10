@@ -12,11 +12,14 @@ import sys
 import logging
 import tempfile
 import time
+import six
+import re
 try:
     import docker
 except ImportError:
     print('missing module: pip install docker')
     sys.exit(1)
+from docker.utils.json_stream import json_stream
 
 
 @contextlib.contextmanager
@@ -250,6 +253,7 @@ if __name__ == '__main__':
                             ('dune-xt-docker/make_env_file.py', lambda m: path.join(superdir, m, '.travis.make_env_file.py'))):
             _update_plain(scriptdir, tpl, module, outname)
 
+    client = docker.from_env(version='auto')
     for m in module_imgs:
         client.images.remove(m.id)
     for m in base_imgs:
