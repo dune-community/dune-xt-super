@@ -7,7 +7,7 @@
 
 image: dunecommunity/gitlabci_dockerindocker
 
-stage:
+.update_image: &update_image
     before_script:
     - pip3 install docker jinja2
 
@@ -24,6 +24,23 @@ stage:
 
 # notifications: Not implemented, see
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/23404
+xt-common:
+    <<: *update_image
+    variables:
+        TRAVIS_MODULE_NAME: "common"
+xt-la:
+    <<: *update_image
+    variables:
+        TRAVIS_MODULE_NAME: "la"
+xt-grid:
+    <<: *update_image
+    variables:
+        TRAVIS_MODULE_NAME: "grid"
+xt-functions:
+    <<: *update_image
+    variables:
+        TRAVIS_MODULE_NAME: "functions"
+
 
 services:
 - docker:dind
