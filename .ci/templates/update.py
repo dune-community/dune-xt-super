@@ -1,5 +1,21 @@
 #!/usr/bin/env python3
 
+"""
+Update docker images and templated scripts in dune-xt-*
+
+Usage:
+  update.py [options] COMMIT_MSG
+
+Arguments:
+  COMMIT_MSG The commit message used for the submodules
+
+Options:
+   -h --help       Show this message.
+   -s --skip       Skip docker image building.
+   -v --verbose    Set logging level to debug.
+"""
+
+from docopt import docopt
 from os import path
 import importlib
 import os
@@ -211,12 +227,15 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
 
 
 if __name__ == '__main__':
-    level = logging.DEBUG if '-v' in sys.argv else logging.INFO
-    skip_docker = '-s' in sys.argv
+    arguments = docopt(__doc__)
+    import pprint
+    pprint.pprint(arguments)
+    skip_docker = arguments['--skip']
+    level = logging.DEBUG if arguments['--verbose'] else logging.INFO
     logging.basicConfig(level=level)
     scriptdir = path.dirname(path.abspath(__file__))
     superdir = path.join(scriptdir, '..', '..')
-    message = ' '.join(sys.argv[1:])
+    message = arguments['COMMIT_MSG']
     names = ['common', 'functions', 'la', 'grid'] if 'TRAVIS_MODULE_NAME' not in os.environ else [os.environ['TRAVIS_MODULE_NAME']]
 
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], universal_newlines=True).strip()
@@ -265,7 +284,12 @@ if __name__ == '__main__':
     if skip_docker:
         sys.exit(0)
     client = docker.from_env(version='auto')
+    def _rm_img(img):
+        try:
+            client.images.remove(m.id, force=True)
+        except docker.errors.APIError as err:
+            logging.error('Could not delete {} - {} : {}'.format(img.name, img.id, str(err)))
     for m in module_imgs:
-        client.images.remove(m.id)
+        _rm_img(m)
     for m in base_imgs:
-        client.images.remove(m.id)
+        _rm_img(m)
