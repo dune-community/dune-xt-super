@@ -5,11 +5,11 @@
 # Authors:
 #   Rene Milk       (2017)
 
-image: dunecommunity/gitlabci_dockerindocker
+image: dunecommunity/gitlabci-dockerindocker
 
 stage:
     before_script:
-    - pip3 install docker jinja2
+    - pip3 install docker jinja2 docopt
 
     script:
     - git submodule sync --recursive
