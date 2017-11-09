@@ -11,7 +11,8 @@ Arguments:
 
 Options:
    -h --help       Show this message.
-   -s --skip       Skip docker image building.
+   --nd            No docker image building.
+   --nc            No committing changes.
    -v --verbose    Set logging level to debug.
 """
 
@@ -46,20 +47,6 @@ def remember_cwd(dirname):
         yield curdir
     finally:
         os.chdir(curdir)
-
-
-@contextlib.contextmanager
-def autoclear_dir(dirname):
-    import shutil
-    try:
-        if path.isdir(dirname):
-            shutil.rmtree(dirname)
-        os.makedirs(dirname)
-        yield
-    except Exception as e:
-        raise e
-    else:
-        shutil.rmtree(dirname)
 
 
 class Timer(object):
@@ -171,29 +158,24 @@ def _update_plain(scriptdir, tpl_file, module, outname):
         os.chmod(outfile, stat.S_IXUSR | stat.S_IWUSR | stat.S_IREAD )
 
 
-def _build_base(scriptdir, cc, cxx, commit, outname, refname):
+def _build_base(scriptdir, cc, cxx, commit, refname):
     client = docker.from_env(version='auto')
-    tag = 'base_{}'.format(cc)
-    tmp_dir = path.join(path.dirname(path.abspath(__file__)), tag)
-    logger = logging.getLogger('{}'.format(tag))
-    tpl = stringTemplate(open(path.join(scriptdir, 'dune-xt-docker_base/Dockerfile.in'), 'rt').read())
-    repo = 'dunecommunity/dune-xt-docker_{}'.format(tag)
-    with autoclear_dir(tmp_dir):
-        with remember_cwd(tmp_dir) as oldpwd:
-            txt = tpl.safe_substitute(commit=commit, cc=cc, cxx=cxx)
-            outfile = outname(tmp_dir)
-            open(outfile, 'wt').write(txt)
-
-            with Timer('docker build ', logger.info):
-                img = _docker_build(client, rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
-                                    tag='{}:{}'.format(repo, commit), path=tmp_dir)
-                img.tag(repo, refname)
+    slug_postfix = 'base_{}'.format(cc)
+    logger = logging.getLogger('{}'.format(slug_postfix))
+    dockerdir = path.join(scriptdir, 'dune-xt-docker_base')
+    dockerfile = path.join(dockerdir, 'Dockerfile')
+    repo = 'dunecommunity/dune-xt-docker_{}'.format(slug_postfix)
+    with Timer('docker build ', logger.info):
+        buildargs = {'COMMIT': commit, 'CC': cc, 'CXX': cxx}
+        img = _docker_build(client, rm=False, buildargs=buildargs,
+                            tag='{}:{}'.format(repo, commit), path=dockerdir)
+        img.tag(repo, refname)
     with Timer('docker push ', logger.info):
         client.images.push(repo)
     return img
 
 
-def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit, refname):
+def _build_combination(tag_matrix, dockerdir, module, commit, refname):
     client = docker.from_env(version='auto')
     imgs = []
     for tag, settings in tag_matrix.items():
@@ -205,21 +187,14 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
         logger = logging.getLogger('{} - {}'.format(module, tag))
         modules_to_delete = '{} {}'.format(modules, vars.modules_to_delete)
         logger.debug('delete: ' + modules_to_delete)
-        tpl = stringTemplate(open(path.join(scriptdir, tpl_file), 'rt').read())
         repo = 'dunecommunity/{}-testing_{}'.format(module, tag)
 
-        with autoclear_dir(tmp_dir):
-            with remember_cwd(tmp_dir) as oldpwd:
-                txt = tpl.safe_substitute(project_name=module, slug='dune-community/{}'.format(module),
-                                          authors=vars.authors, modules_to_delete=modules_to_delete,
-                                          commit=commit, cc=cc, cxx=cxx)
-                outfile = outname(tmp_dir)
-                open(outfile, 'wt').write(txt)
-
-                with Timer('docker build ', logger.info):
-                    img = _docker_build(client, rm=True, fileobj=open(os.path.join(oldpwd, outfile), 'rb'),
-                          tag='{}:{}'.format(repo, commit), path=tmp_dir)
-                    img.tag(repo, refname)
+        with Timer('docker build ', logger.info):
+            buildargs = {'COMMIT': commit, 'CC': cc, 'project_name': module,
+                         'modules_to_delete': modules_to_delete}
+            img = _docker_build(client, rm=False, buildargs=buildargs,
+                    tag='{}:{}'.format(repo, commit), path=dockerdir)
+            img.tag(repo, refname)
         with Timer('docker push ', logger.info):
             client.images.push(repo)
         imgs.append(img)
@@ -228,9 +203,8 @@ def _build_combination(tag_matrix, scriptdir, module, outname, tpl_file, commit,
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
-    import pprint
-    pprint.pprint(arguments)
-    skip_docker = arguments['--skip']
+    skip_docker = arguments['--nd']
+    skip_commit = arguments['--nc']
     level = logging.DEBUG if arguments['--verbose'] else logging.INFO
     logging.basicConfig(level=level)
     scriptdir = path.dirname(path.abspath(__file__))
@@ -250,7 +224,7 @@ if __name__ == '__main__':
 
     all_compilers = {(f['cc'], f['cxx']) for f in tag_matrix.values()}
     if not skip_docker:
-        base_imgs = [_build_base(scriptdir, cc, cxx, commit, lambda k: '{}/Dockerfile'.format(k), refname) for cc, cxx in all_compilers]
+        base_imgs = [_build_base(scriptdir, cc, cxx, commit, refname) for cc, cxx in all_compilers]
     else:
         base_imgs = []
 
@@ -260,11 +234,10 @@ if __name__ == '__main__':
         module_dir = os.path.join(superdir, module)
 
         if not skip_docker:
-            module_imgs += _build_combination(tag_matrix=tag_matrix, scriptdir=scriptdir,
-                            tpl_file='dune-xt-docker/Dockerfile.in',
-                            module=module,
-                        outname=lambda k: '{}/Dockerfile'.format(k),
-                        commit=commit, refname=refname)
+            module_imgs += _build_combination(tag_matrix=tag_matrix,
+                                dockerdir=os.path.join(scriptdir, 'dune-xt-docker'),
+                                module=module,
+                                commit=commit, refname=refname)
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
@@ -280,15 +253,16 @@ if __name__ == '__main__':
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
-        _commit(module_dir, message)
+        if not skip_commit:
+            _commit(module_dir, message)
     if skip_docker:
         sys.exit(0)
     client = docker.from_env(version='auto')
     def _rm_img(img):
         try:
-            client.images.remove(m.id, force=True)
+            client.images.remove(img.id, force=True)
         except docker.errors.APIError as err:
-            logging.error('Could not delete {} - {} : {}'.format(img.name, img.id, str(err)))
+            logging.error('Could not delete {} - {} : {}'.format(str(img), img.id, str(err)))
     for m in module_imgs:
         _rm_img(m)
     for m in base_imgs:
