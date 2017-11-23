@@ -26,6 +26,4 @@ stage:
 # notifications: Not implemented, see
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/23404
 
-services:
-- docker:dind
 
