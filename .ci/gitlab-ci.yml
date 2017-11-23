@@ -9,6 +9,7 @@ image: dunecommunity/gitlabci-dockerindocker
 
 stage:
     before_script:
+    - docker info
     - pip3 install docker jinja2 docopt
 
     script:
