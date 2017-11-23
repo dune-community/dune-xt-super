@@ -20,9 +20,7 @@ stage:
     - export TRAVIS_BRANCH=${CI_COMMIT_REF_NAME}
     - export TRAVIS=${GITLAB_CI}
     - python3 -c "from configparser import SafeConfigParser as sf ; f = sf() ; f.readfp(open('external-libraries.cfg', 'rt'))"
-    - |
-        docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
-        python3 ./.ci/templates/update.py "updated travis.ymls from CI"
+
 
 # notifications: Not implemented, see
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/23404
