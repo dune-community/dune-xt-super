@@ -7,14 +7,15 @@
 
 image: dunecommunity/gitlabci-dockerindocker
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stage:
     before_script:
     - docker info
     - pip3 install docker jinja2 docopt
 
     script:
-    - git submodule sync --recursive
-    - git submodule update --init --recursive
     - git submodule status
     - export TRAVIS_BRANCH=${CI_COMMIT_REF_NAME}
     - export TRAVIS=${GITLAB_CI}
