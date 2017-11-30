@@ -2,7 +2,7 @@
 	path = config.opts
 	url = https://github.com/dune-community/config.opts.git
 [submodule "local/bin"]
-	path = local/bin
+	path = bin
 	url = https://github.com/dune-community/local-bin.git
 [submodule "dune-common"]
 	path = dune-common
