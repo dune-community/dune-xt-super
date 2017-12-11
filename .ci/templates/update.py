@@ -257,12 +257,4 @@ if __name__ == '__main__':
     if skip_docker:
         sys.exit(0)
     client = docker.from_env(version='auto')
-    def _rm_img(img):
-        try:
-            client.images.remove(img.id, force=True)
-        except docker.errors.APIError as err:
-            logging.error('Could not delete {} - {} : {}'.format(str(img), img.id, str(err)))
-    for m in module_imgs:
-        _rm_img(m)
-    for m in base_imgs:
-        _rm_img(m)
+
