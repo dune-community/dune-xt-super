@@ -38,6 +38,11 @@ except ImportError:
     sys.exit(1)
 from docker.utils.json_stream import json_stream
 
+TAG_MATRIX = {'gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes': ""},
+        'gcc_no_istl_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab dune-functions dune-typetree dune-istl"},
+        'gcc_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab"},
+        'clang_full': {'cc': 'clang', 'cxx': 'clang++', 'deletes':""}}
+
 
 @contextlib.contextmanager
 def remember_cwd(dirname):
@@ -216,13 +221,7 @@ if __name__ == '__main__':
     commit = os.environ.get('CI_COMMIT_SHA', head)
     refname = os.environ.get('CI_COMMIT_REF_NAME', 'master').replace('/', '_')
 
-    tag_matrix = {'gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes':""},
-        'gcc_no_istl_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab dune-functions dune-typetree dune-istl"},
-        'gcc_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab"},
-        'clang_full': {'cc': 'clang', 'cxx': 'clang++', 'deletes':""}}
-
-
-    all_compilers = {(f['cc'], f['cxx']) for f in tag_matrix.values()}
+    all_compilers = {(f['cc'], f['cxx']) for f in TAG_MATRIX.values()}
     if not skip_docker:
         base_imgs = [_build_base(scriptdir, cc, cxx, commit, refname) for cc, cxx in all_compilers]
     else:
@@ -234,10 +233,10 @@ if __name__ == '__main__':
         module_dir = os.path.join(superdir, module)
 
         if not skip_docker:
-            module_imgs += _build_combination(tag_matrix=tag_matrix,
-                                dockerdir=os.path.join(scriptdir, 'dune-xt-docker'),
-                                module=module,
-                                commit=commit, refname=refname)
+            module_imgs += _build_combination(tag_matrix=TAG_MATRIX,
+                                              dockerdir=os.path.join(scriptdir, 'dune-xt-docker'),
+                                              module=module,
+                                              commit=commit, refname=refname)
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
