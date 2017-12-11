@@ -57,13 +57,7 @@ def _build_local(base, image, logger):
         _cmd(cmd, logger)
 
 
-def _run_config(tag, superdir, module, clone_dir, commit, level=logging.DEBUG):
-    logger = logging.getLogger(tag)
-    myFormatter = logging.Formatter('{}: %(asctime)s - %(message)s'.format(tag))
-    handler = logging.StreamHandler()
-    handler.setFormatter(myFormatter)
-    # logger.addHandler(handler)
-    logger.setLevel(level)
+def _run_config(tag, superdir, module, clone_dir, commit, logger):
     logdir = path.join(superdir, 'log', module)
     makedirs(logdir, exist_ok=True )
     logfile = path.join(logdir, '{}.log'.format(tag))
@@ -86,9 +80,7 @@ def _run_config(tag, superdir, module, clone_dir, commit, level=logging.DEBUG):
                 with open(logfile, 'wt') as log:
                     log.write(' '.join(cmd))
                     log.write('\n'+'-'*79)
-                    log.flush()
-                    out = subprocess.check_output(cmd, stderr=log, universal_newlines=True)
-                    log.write(out)
+                    subprocess.check_call(cmd, stderr=log, stdout=log, universal_newlines=True)
             except subprocess.CalledProcessError as err:
                 logging.error('Failed config: {}'.format(tag))
                 logging.error(err)
@@ -113,5 +105,7 @@ with TemporaryDirectory() as clone_tmp:
         tmp_dir = path.join(path.dirname(path.abspath(__file__)), module, tag)
         modules = settings['deletes']
         logger = logging.getLogger('{} - {}'.format(module, tag))
+        logger.setLevel(level)
         with update.Timer('testing {} {}'.format(module, tag), logger.info):
-            _run_config(tag=tag, superdir=superdir, module=module, clone_dir=clone_dir, commit=commit, level=level)
+            _run_config(tag=tag, superdir=superdir, module=module, clone_dir=clone_dir,
+                        commit=commit, logger=logger)
