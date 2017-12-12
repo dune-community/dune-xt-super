@@ -9,6 +9,8 @@
 #   Felix Schindler (2017)
 #   Rene Milk       (2017)
 
+source /usr/share/env.sh
+
 USERNAME_=${LOCAL_USER:-user}
 UID_=${LOCAL_UID:-1000}
 GID_=${LOCAL_GID:-$UID_}
