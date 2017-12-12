@@ -12,6 +12,7 @@ Arguments:
 Options:
    -h --help       Show this message.
    -v --verbose    Set logging level to debug.
+   -t TAG --tag=TAG only test selected docker image tag, ex: clang_full
 """
 import contextlib
 import logging
@@ -83,17 +84,18 @@ def _run_config(tag, superdir, module, module_dir, commit, logger):
     logger.info('Log at: xdg-open {}'.format(logfile))
 
 
-def process_module(module):
+def process_module(module, tags):
     level = logging.DEBUG if arguments['--verbose'] else logging.INFO
     logging.basicConfig(level=level)
 
     superdir = path.join(SCRIPTDIR, '..', '..')
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode().strip()
     module_dir = path.join(superdir, module)
-    for tag, settings in update.TAG_MATRIX.items():
+    for tag in tags:
         logger = logging.getLogger('{} - {}'.format(module, tag))
         logger.setLevel(level)
         with update.Timer('testing {} {}'.format(module, tag), logger.info):
+            logger.info('Starting: {}'.format(module))
             _run_config(tag=tag, superdir=superdir, module=module, module_dir=module_dir,
                         commit=commit, logger=logger)
 
@@ -101,4 +103,8 @@ def process_module(module):
 if __name__ == '__main__':
     arguments = docopt(__doc__)
     module = 'dune-xt-{}'.format(arguments['MODULE'])
-    process_module(module)
+    if arguments['--tag']:
+        tags = [arguments['--tag']]
+    else:
+        tags = update.TAG_MATRIX.keys()
+    process_module(module, tags)
