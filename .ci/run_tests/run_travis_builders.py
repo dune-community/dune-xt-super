@@ -95,7 +95,7 @@ def process_module(module, tags):
         logger = logging.getLogger('{} - {}'.format(module, tag))
         logger.setLevel(level)
         with update.Timer('testing {} {}'.format(module, tag), logger.info):
-            logger.info('Starting: {}'.format(module))
+            logger.info('Starting')
             _run_config(tag=tag, superdir=superdir, module=module, module_dir=module_dir,
                         commit=commit, logger=logger)
 
