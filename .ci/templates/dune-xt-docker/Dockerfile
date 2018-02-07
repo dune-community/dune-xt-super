@@ -14,7 +14,7 @@ ENV MY_MODULE=${project_name}
 # run our local scripts look for an OPTS env entry
 # and ensure ${MY_MODULE} from checkout is used via clean mount point
 # and removes xt-la, xt-grid, xt-functions for xt-common, etc
-RUN set -eu && ${DUNE_VENV_ACTIVATE} && \
+RUN set -eu && \
     rm -rf ${MY_MODULE} ${modules_to_delete} && \
     mkdir ${MY_MODULE} && \
     ${SRC_DCTRL} ${BLD} all
