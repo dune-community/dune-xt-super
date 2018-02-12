@@ -141,9 +141,11 @@ def _commit(dirname, message):
     with remember_cwd(dirname):
         try:
             _ = subprocess.check_call(['git', 'add', '.travis.yml', '.travis.make_env_file.py',
-                                       '.travis.after_script.bash', '.travis.script.bash'])
+                                       '.travis.after_script.bash', '.travis.script.bash',
+                                       '.travis.test_python.bash'])
             _ = subprocess.check_call(['git', 'commit', '.travis.yml', '.travis.make_env_file.py',
                                        '.travis.after_script.bash', '.travis.script.bash',
+                                       '.travis.test_python.bash',
                                        '-m', '{}'.format(message)])
         except subprocess.CalledProcessError as er:
             print(dirname)
@@ -246,6 +248,7 @@ if __name__ == '__main__':
         for tpl, outname in (('travis.yml.in', lambda m: path.join(superdir, m, '.travis.yml')),
                             ('dune-xt-docker/after_script.bash.in', lambda m: path.join(superdir, m, '.travis.after_script.bash')),
                             ('dune-xt-docker/script.bash.in', lambda m: path.join(superdir, m, '.travis.script.bash')),
+                            ('dune-xt-docker/test_python.bash.in', lambda m: path.join(superdir, m, '.travis.test_python.bash')),
                             ('dune-xt-docker/make_env_file.py', lambda m: path.join(superdir, m, '.travis.make_env_file.py'))):
             _update_plain(scriptdir, tpl, module, outname)
 
