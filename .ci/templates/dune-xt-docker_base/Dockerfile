@@ -19,8 +19,7 @@ ENV CC=${CC} \
     CXX=${CXX}
 
 # run our local scripts look for an OPTS env entry
-RUN ${DUNE_VENV_ACTIVATE} && \
-    ./bin/download_external_libraries.py 1> /dev/null && \
+RUN ./bin/download_external_libraries.py 1> /dev/null && \
     ./bin/build_external_libraries.py 1> /dev/null
 
 
