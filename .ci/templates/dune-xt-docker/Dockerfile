@@ -18,7 +18,7 @@ RUN set -eu && \
     rm -rf ${MY_MODULE} ${modules_to_delete} && \
     mkdir ${MY_MODULE} && \
     ${SRC_DCTRL} ${BLD} all && \
-    ${SRC_DCTRL} ${BLD} bexec ${BUILD_CMD} bindings
+    ${SRC_DCTRL} ${BLD} bexec "${BUILD_CMD} bindings || echo no bindings"
 
 # THE END
 ENV DEBIAN_FRONTEND teletype
