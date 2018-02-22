@@ -4,5 +4,5 @@ authors='''# Authors:
 #   Tobias Leibner  (2016)'''
 
 modules_to_delete='dune-xt-la dune-xt-functions'
-bin_count=3
+bin_count=2
 docker_tags=['gcc_full', 'gcc_no_istl_no_disc', 'gcc_no_disc', 'clang_full']
