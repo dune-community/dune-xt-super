@@ -39,8 +39,6 @@ except ImportError:
 from docker.utils.json_stream import json_stream
 
 TAG_MATRIX = {'gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes': ""},
-        'gcc_no_istl_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab dune-functions dune-typetree dune-istl"},
-        'gcc_no_disc': {'cc': 'gcc', 'cxx': 'g++', 'deletes':"dune-fem dune-pdelab"},
         'clang_full': {'cc': 'clang', 'cxx': 'clang++', 'deletes':""}}
 
 
