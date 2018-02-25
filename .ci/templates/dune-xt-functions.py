@@ -3,6 +3,6 @@ authors='''# Authors:
 #   Rene Milk       (2016 - 2017)
 #   Tobias Leibner  (2016)'''
 
-modules_to_delete='dune-xt-la'
+modules_to_delete=''
 bin_count=4
-docker_tags=['gcc_full', 'gcc_no_istl_no_disc', 'gcc_no_disc', 'clang_full']
+docker_tags=['gcc_full', 'clang_full']
