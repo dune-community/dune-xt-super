@@ -38,8 +38,9 @@ except ImportError:
     sys.exit(1)
 from docker.utils.json_stream import json_stream
 
-TAG_MATRIX = {'gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes': ""},
-        'clang_full': {'cc': 'clang', 'cxx': 'clang++', 'deletes':""}}
+TAG_MATRIX = {'debian_gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes': "", 'base': 'debian'},
+        'debian_clang_full': {'cc': 'clang', 'cxx': 'clang++', 'deletes':"", 'base': 'debian'},
+        'arch_gcc_full': {'cc': 'gcc', 'cxx': 'g++', 'deletes': "", 'base': 'arch'},}
 
 
 @contextlib.contextmanager
@@ -155,6 +156,7 @@ def _update_plain(scriptdir, tpl_file, module, outname):
     vars = importlib.import_module(module)
     tpl = jinja2.Template(open(path.join(scriptdir, tpl_file), 'rt').read())
     outfile = outname(module)
+    vars.__dict__.update({'docker_tags': list(TAG_MATRIX.keys())})
     txt = tpl.render(project_name=module, slug='dune-community/{}'.format(module),
                     extra_deletes=[],
                     **vars.__dict__)
@@ -163,15 +165,15 @@ def _update_plain(scriptdir, tpl_file, module, outname):
         os.chmod(outfile, stat.S_IXUSR | stat.S_IWUSR | stat.S_IREAD )
 
 
-def _build_base(scriptdir, cc, cxx, commit, refname):
+def _build_base(scriptdir, base, cc, cxx, commit, refname):
     client = docker.from_env(version='auto')
-    slug_postfix = 'base_{}'.format(cc)
+    slug_postfix = 'base_{}_{}'.format(base, cc)
     logger = logging.getLogger('{}'.format(slug_postfix))
     dockerdir = path.join(scriptdir, 'dune-xt-docker_base')
     dockerfile = path.join(dockerdir, 'Dockerfile')
     repo = 'dunecommunity/dune-xt-docker_{}'.format(slug_postfix)
     with Timer('docker build ', logger.info):
-        buildargs = {'COMMIT': commit, 'CC': cc, 'CXX': cxx}
+        buildargs = {'COMMIT': commit, 'CC': cc, 'CXX': cxx, 'BASE': base}
         img = _docker_build(client, rm=False, buildargs=buildargs,
                             tag='{}:{}'.format(repo, commit), path=dockerdir)
         img.tag(repo, refname)
@@ -196,7 +198,7 @@ def _build_combination(tag_matrix, dockerdir, module, commit, refname):
 
         with Timer('docker build ', logger.info):
             buildargs = {'COMMIT': commit, 'CC': cc, 'project_name': module,
-                         'modules_to_delete': modules_to_delete}
+                         'modules_to_delete': modules_to_delete, 'BASE': settings['base']}
             img = _docker_build(client, rm=False, buildargs=buildargs,
                     tag='{}:{}'.format(repo, commit), path=dockerdir)
             img.tag(repo, refname)
@@ -221,9 +223,9 @@ if __name__ == '__main__':
     commit = os.environ.get('CI_COMMIT_SHA', head)
     refname = os.environ.get('CI_COMMIT_REF_NAME', 'master').replace('/', '_')
 
-    all_compilers = {(f['cc'], f['cxx']) for f in TAG_MATRIX.values()}
+    all_compilers = {(f['base'], f['cc'], f['cxx']) for f in TAG_MATRIX.values()}
     if not skip_docker:
-        base_imgs = [_build_base(scriptdir, cc, cxx, commit, refname) for cc, cxx in all_compilers]
+        base_imgs = [_build_base(scriptdir, base, cc, cxx, commit, refname) for base, cc, cxx in all_compilers]
     else:
         base_imgs = []
 

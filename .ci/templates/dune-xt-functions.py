@@ -5,4 +5,3 @@ authors='''# Authors:
 
 modules_to_delete=''
 bin_count=4
-docker_tags=['gcc_full', 'clang_full']
