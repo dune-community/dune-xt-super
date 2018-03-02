@@ -5,4 +5,3 @@ authors='''# Authors:
 
 modules_to_delete='dune-xt-grid dune-xt-la dune-xt-functions'
 bin_count=0
-docker_tags=['gcc_full', 'clang_full']
