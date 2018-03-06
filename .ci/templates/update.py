@@ -165,15 +165,16 @@ def _update_plain(scriptdir, tpl_file, module, outname):
         os.chmod(outfile, stat.S_IXUSR | stat.S_IWUSR | stat.S_IREAD )
 
 
-def _build_base(scriptdir, base, cc, cxx, commit, refname):
+def _build_base(scriptdir, distro, cc, cxx, commit, refname):
     client = docker.from_env(version='auto')
-    slug_postfix = 'base_{}_{}'.format(base, cc)
+    base_postfix = '{}_{}'.format(distro, cc)
+    slug_postfix = 'base_{}'.format(base_postfix)
     logger = logging.getLogger('{}'.format(slug_postfix))
     dockerdir = path.join(scriptdir, 'dune-xt-docker_base')
     dockerfile = path.join(dockerdir, 'Dockerfile')
     repo = 'dunecommunity/dune-xt-docker_{}'.format(slug_postfix)
     with Timer('docker build ', logger.info):
-        buildargs = {'COMMIT': commit, 'CC': cc, 'CXX': cxx, 'BASE': base}
+        buildargs = {'COMMIT': commit, 'CC': cc, 'CXX': cxx, 'BASE': distro}
         img = _docker_build(client, rm=False, buildargs=buildargs,
                             tag='{}:{}'.format(repo, commit), path=dockerdir)
         img.tag(repo, refname)
