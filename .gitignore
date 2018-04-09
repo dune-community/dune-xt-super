@@ -1,4 +1,8 @@
 PATH.sh
+demos
+demos-*
+build-*
+build/*
 *~
 
 # subdir for generated project files 
