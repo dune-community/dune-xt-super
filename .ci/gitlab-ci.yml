@@ -21,7 +21,7 @@ stage:
     - ./bin/check_environments.py
     - |
         docker login --username=$DOCKER_HUB_USERNAME --password=$DOCKER_HUB_PASSWORD
-        python3 ./.ci/templates/update.py "updated travis.ymls from CI"
+        python3 ./.ci/templates/update.py --nc "updated travis.ymls from CI"
 
 # notifications: Not implemented, see
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/23404
