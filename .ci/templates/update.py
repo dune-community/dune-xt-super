@@ -179,7 +179,8 @@ def _build_base(scriptdir, distro, cc, cxx, commit, refname):
                             tag='{}:{}'.format(repo, commit), path=dockerdir)
         img.tag(repo, refname)
     with Timer('docker push ', logger.info):
-        client.images.push(repo)
+        client.images.push(repo, tag=refname)
+        client.images.push(repo, tag=commit)
     return img
 
 
@@ -204,7 +205,8 @@ def _build_combination(tag_matrix, dockerdir, module, commit, refname):
                     tag='{}:{}'.format(repo, commit), path=dockerdir)
             img.tag(repo, refname)
         with Timer('docker push ', logger.info):
-            client.images.push(repo)
+            client.images.push(repo, tag=refname)
+            client.images.push(repo, tag=commit)
         imgs.append(img)
     return imgs
 
