@@ -21,6 +21,7 @@ before_script:
     - export MY_MODULE={{project_name}}
     - export ENV_FILE=${HOME}/env
     - python3 ./.travis.make_env_file.py
+    - docker inspect ${IMAGE}
     - export DOCKER_RUN="docker run --env-file ${ENV_FILE} -v ${TRAVIS_BUILD_DIR}:/root/src/{{project_name}} ${IMAGE}"
 
 script:
