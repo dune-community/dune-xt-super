@@ -12,7 +12,7 @@
 	url = https://github.com/dune-mirrors/dune-python.git
 [submodule "dune-testtools"]
 	path = dune-testtools
-	url = https://github.com/dune-mirrors/dune-testtools.git
+	url = https://github.com/dune-community/dune-testtools.git
 [submodule "dune-localfunctions"]
 	path = dune-localfunctions
 	url = http://github.com/dune-mirrors/dune-localfunctions.git
