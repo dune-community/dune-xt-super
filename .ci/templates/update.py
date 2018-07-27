@@ -176,7 +176,7 @@ def _build_base(scriptdir, distro, cc, cxx, commit, refname):
     repo = 'dunecommunity/dune-xt-docker_{}'.format(slug_postfix)
     with Timer('docker build ', logger.info):
         buildargs = {'COMMIT': commit, 'CC': cc, 'CXX': cxx, 'BASE': distro}
-        img = _docker_build(client, rm=False, buildargs=buildargs,
+        img = _docker_build(client, rm=False, buildargs=buildargs, pull=True,
                             tag='{}:{}'.format(repo, commit), path=dockerdir)
         img.tag(repo, refname)
     with Timer('docker push ', logger.info):
