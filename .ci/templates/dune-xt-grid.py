@@ -4,4 +4,4 @@ authors='''# Authors:
 #   Tobias Leibner  (2016)'''
 
 modules_to_delete='dune-xt-la dune-xt-functions'
-bin_count=2
+bin_count=3
