@@ -16,10 +16,12 @@ ENV MY_MODULE=${project_name}
 # and ensure ${MY_MODULE} from checkout is used via clean mount point
 # and removes xt-la, xt-grid, xt-functions for xt-common, etc
 RUN set -eu && \
-    rm -rf ${MY_MODULE} ${modules_to_delete} && \
-    mkdir ${MY_MODULE} && \
+    rm -rf ${modules_to_delete} && \
     ${SRC_DCTRL} ${BLD} all && \
-    ${SRC_DCTRL} ${BLD} bexec "${BUILD_CMD} bindings || echo no bindings"
+    ${SRC_DCTRL} ${BLD} bexec "${BUILD_CMD} bindings || echo no bindings" && \
+    rm -rf ${MY_MODULE}  && \
+    mkdir ${MY_MODULE}
+
 
 # THE END
 ENV DEBIAN_FRONTEND teletype
