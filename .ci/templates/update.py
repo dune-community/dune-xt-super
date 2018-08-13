@@ -221,7 +221,7 @@ if __name__ == '__main__':
     scriptdir = path.dirname(path.abspath(__file__))
     superdir = path.join(scriptdir, '..', '..')
     message = arguments['COMMIT_MSG']
-    names = ['common', 'functions', 'la', 'grid'] if 'TRAVIS_MODULE_NAME' not in os.environ else [os.environ['TRAVIS_MODULE_NAME']]
+    names = ['common', 'functions', 'la', 'grid', 'data'] if 'TRAVIS_MODULE_NAME' not in os.environ else [os.environ['TRAVIS_MODULE_NAME']]
 
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], universal_newlines=True).strip()
     commit = os.environ.get('CI_COMMIT_SHA', head)
