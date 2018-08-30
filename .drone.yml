@@ -1,18 +1,26 @@
 pipeline:
-  build:
+  check:
     image: dunecommunity/gitlabci_dockerindocker-dockerindocker
     commands:
       - git submodule status
       - ./bin/check_environments.py
+      - pip3 install -U docker jinja2 docopt
+      - .ci/templates/update.py --nd --nc 'no message'
+      - cd dune-xt-$TRAVIS_MODULE_NAME
+      - git diff
+
+  docker:
+    image: dunecommunity/gitlabci_dockerindocker-dockerindocker
+    commands:
       - echo $DOCKER_PW | docker login --username="$DOCKER_USER" --password-stdin
       - pip3 install -U docker jinja2 docopt
       - .ci/templates/update.py --nc 'no message'
-      - cd dune-xt-$TRAVIS_MODULE_NAME
-      - git diff
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     secrets: [ docker_user, docker_pw ]
+    when:
+      event: push
 
 matrix:
   TRAVIS_MODULE_NAME:
@@ -20,4 +28,4 @@ matrix:
     - la
     - functions
     - data
-    - grid 
+    - grid
