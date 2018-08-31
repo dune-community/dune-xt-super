@@ -22,6 +22,14 @@ pipeline:
     when:
       event: push
 
+  notify:
+    image: drillster/drone-email
+    host: mail.milk.pm
+    from: drone@pymor.org
+    when:
+      status: [ changed, failure ]
+    secrets:  [ email_username, email_password ]
+
 matrix:
   TRAVIS_MODULE_NAME:
     - common
