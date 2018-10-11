@@ -221,11 +221,11 @@ if __name__ == '__main__':
     scriptdir = path.dirname(path.abspath(__file__))
     superdir = path.join(scriptdir, '..', '..')
     message = arguments['COMMIT_MSG']
-    names = ['common', 'functions', 'la', 'grid', 'data'] if 'TRAVIS_MODULE_NAME' not in os.environ else [os.environ['TRAVIS_MODULE_NAME']]
+    names = ['common', 'functions', 'la', 'grid', 'data'] if 'XT_MODULE_NAME' not in os.environ else [os.environ['XT_MODULE_NAME']]
 
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], universal_newlines=True).strip()
-    commit = os.environ.get('CI_COMMIT_SHA', head)
-    refname = os.environ.get('CI_COMMIT_REF_NAME', 'master').replace('/', '_')
+    commit = os.environ.get('DRONE_COMMIT_SHA', head)
+    refname = os.environ.get('DRONE_COMMIT_BRANCH', 'master').replace('/', '_')
 
     all_compilers = {(f['base'], f['cc'], f['cxx']) for f in TAG_MATRIX.values()}
     if not skip_docker:
@@ -246,7 +246,7 @@ if __name__ == '__main__':
         if _is_dirty(module_dir):
             print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
             continue
-        if 'TRAVIS' in os.environ.keys() or 'GITLAB' in os.environ.keys():
+        if 'TRAVIS' in os.environ.keys() or 'DRONE' in os.environ.keys():
             logging.info('Skipping templates because we are on travis')
             continue
         for tpl, outname in (('travis.yml.in', lambda m: path.join(superdir, m, '.travis.yml')),
