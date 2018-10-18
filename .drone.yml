@@ -6,8 +6,7 @@ pipeline:
       - ./bin/check_environments.py
       - pip3 install -U docker jinja2 docopt
       - .ci/templates/update.py --nd --nc 'no message'
-      - cd dune-xt-$TRAVIS_MODULE_NAME
-      - git diff
+      - for i in $( ls -d dune-xt-* ) ; do pushd ; git diff ; popd ; done
 
   docker:
     image: dunecommunity/gitlabci_dockerindocker-dockerindocker
@@ -21,11 +20,3 @@ pipeline:
     secrets: [ docker_user, docker_pw ]
     when:
       event: push
-
-matrix:
-  TRAVIS_MODULE_NAME:
-    - common
-    - la
-    - functions
-    - data
-    - grid
