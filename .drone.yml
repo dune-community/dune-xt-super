@@ -6,7 +6,7 @@ pipeline:
       - ./bin/check_environments.py
       - pip3 install -U docker jinja2 docopt
       - .ci/templates/update.py --nd --nc 'no message'
-      - for i in $( ls -d dune-xt-* ) ; do pushd ; git diff ; popd ; done
+      - for i in $( ls -d dune-xt-* ) ; do cd $i ; git diff ; cd - ; done
 
   docker:
     image: dunecommunity/gitlabci_dockerindocker-dockerindocker
@@ -20,3 +20,11 @@ pipeline:
     secrets: [ docker_user, docker_pw ]
     when:
       event: push
+
+  notify:
+    image: drillster/drone-email
+    host: mail.milk.pm
+    from: drone@pymor.org
+    when:
+      status: [ changed, failure ]
+    secrets:  [ email_username, email_password ]
