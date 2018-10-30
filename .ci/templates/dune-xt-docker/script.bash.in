@@ -28,9 +28,6 @@ else
     ${SRC_DCTRL} ${BLD} --only=${MY_MODULE} bexec ${CTEST} -L "^builder_${TESTS}$"
 fi
 
-${SRC_DCTRL} ${BLD} --only=${MY_MODULE} bexec ${BUILD_CMD} install | grep -v "Installing"
-${SRC_DCTRL} ${BLD} --only=${MY_MODULE} bexec ${BUILD_CMD} package_source
-
 # clang coverage currently disabled for being to mem hungry
 if [[ ${CC} == *"clang"* ]] ; then
     exit 0
