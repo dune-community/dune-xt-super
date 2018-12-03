@@ -4,4 +4,4 @@ authors='''# Authors:
 #   Tobias Leibner  (2016)'''
 
 modules_to_delete=''
-bin_count=5
+bin_count=6
