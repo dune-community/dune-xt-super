@@ -28,8 +28,8 @@ pipeline:
     commands:
       - echo $DOCKER_PW | docker login --username="$DOCKER_USER" --password-stdin
       - pip3 install -U docker
-      - docker build --build-arg BASE=${BASE} -t dunecommunity/xt-super_${BASE}:"${DRONE_COMMIT_SHA}" -f .ci/super_docker/Dockerfile .
-      - docker push dunecommunity/xt-super_${BASE}:"${DRONE_COMMIT_SHA}"
+      - docker build --build-arg BASE=$${BASE} -t dunecommunity/xt-super_$${BASE}:"${DRONE_COMMIT_SHA}" -f .ci/super_docker/Dockerfile .
+      - docker push dunecommunity/xt-super_$${BASE}:"${DRONE_COMMIT_SHA}"
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
