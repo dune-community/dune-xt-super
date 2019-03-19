@@ -4,16 +4,13 @@ pipeline:
     commands:
       - git submodule status
       - ./bin/check_environments.py
-      - pip3 install -U docker jinja2 docopt
-      - .ci/templates/update.py --nd --nc 'no message'
-      - for i in $( ls -d dune-xt-* ) ; do cd $i ; git diff ; cd - ; done
 
   test_provisioning:
     image: dunecommunity/gitlabci_dockerindocker-dockerindocker
     commands:
       - echo $DOCKER_PW | docker login --username="$DOCKER_USER" --password-stdin
       - pip3 install -U docker jinja2 docopt
-      - .ci/templates/update.py --nc 'no message'
+      - .ci/templates/update_test_dockers.py
 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
