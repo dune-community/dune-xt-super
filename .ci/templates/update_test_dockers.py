@@ -104,21 +104,6 @@ def _docker_build(client, **kwargs):
     raise docker.errors.BuildError(last_event or 'Unknown', resp)
 
 
-def _is_dirty(dirname):
-    with remember_cwd(dirname):
-        try:
-            # make sure we're on a branch
-            _ = subprocess.check_call(['git', 'symbolic-ref', 'HEAD'])
-            # no changes to tracked files
-            _ = subprocess.check_call(['git', 'diff-index', '--quiet', '--cached', 'HEAD'])
-            # no untracked files
-            _ = subprocess.check_call(['git', 'diff-files', '--quiet'])
-            return False
-        except subprocess.CalledProcessError as er:
-            print(er)
-            return True
-
-
 def _cmd(cmd, logger):
     logger.debug(' '.join(cmd))
     try:
@@ -129,41 +114,6 @@ def _cmd(cmd, logger):
         logger.error('Failed: {}'.format(' '.join(cmd)))
         logger.error('Make sure the pushers group has write access to this repo on hub.cocker.com!')
         raise cp
-
-
-def _commit(dirname, message):
-    logger = logging.getLogger('{}'.format(os.path.basename(dirname)))
-    logger.info('committing...')
-    if not _is_dirty(dirname):
-        return
-    if not message or message == '':
-        raise CommitMessageMissing(dirname)
-    with remember_cwd(dirname):
-        try:
-            _ = subprocess.check_call(['git', 'add', '.travis.yml', '.travis.make_env_file.py',
-                                       '.travis.after_script.bash', '.travis.script.bash',
-                                       '.travis.test_python.bash'])
-            _ = subprocess.check_call(['git', 'commit', '.travis.yml', '.travis.make_env_file.py',
-                                       '.travis.after_script.bash', '.travis.script.bash',
-                                       '.travis.test_python.bash',
-                                       '-m', '{}'.format(message)])
-        except subprocess.CalledProcessError as er:
-            print(dirname)
-            print(er)
-            logger.error('committing... failed')
-
-
-def _update_plain(scriptdir, tpl_file, module, outname):
-    vars = importlib.import_module(module)
-    tpl = jinja2.Template(open(path.join(scriptdir, tpl_file), 'rt').read())
-    outfile = outname(module)
-    vars.__dict__.update({'docker_tags': list(TAG_MATRIX.keys())})
-    txt = tpl.render(project_name=module, slug='dune-community/{}'.format(module),
-                    extra_deletes=[],
-                    **vars.__dict__)
-    open(outfile, 'wt').write(txt)
-    if outfile.endswith('.bash'):
-        os.chmod(outfile, stat.S_IXUSR | stat.S_IWUSR | stat.S_IREAD )
 
 
 def _build_base(scriptdir, distro, cc, cxx, commit, refname):
@@ -214,8 +164,6 @@ def _build_combination(tag_matrix, dockerdir, module, commit, refname):
 
 if __name__ == '__main__':
     arguments = docopt(__doc__)
-    skip_docker = arguments['--nd']
-    skip_commit = arguments['--nc']
     level = logging.DEBUG if arguments['--verbose'] else logging.INFO
     logging.basicConfig(level=level)
     scriptdir = path.dirname(path.abspath(__file__))
@@ -228,40 +176,12 @@ if __name__ == '__main__':
     refname = os.environ.get('DRONE_COMMIT_BRANCH', 'master').replace('/', '_')
 
     all_compilers = {(f['base'], f['cc'], f['cxx']) for f in TAG_MATRIX.values()}
-    if not skip_docker:
-        base_imgs = [_build_base(scriptdir, base, cc, cxx, commit, refname) for base, cc, cxx in all_compilers]
-    else:
-        base_imgs = []
-
+    base_imgs = [_build_base(scriptdir, base, cc, cxx, commit, refname) for base, cc, cxx in all_compilers]
     module_imgs = []
     for i in names:
         module = 'dune-xt-{}'.format(i)
         module_dir = os.path.join(superdir, module)
-
-        if not skip_docker:
-            module_imgs += _build_combination(tag_matrix=TAG_MATRIX,
-                                              dockerdir=os.path.join(scriptdir, 'dune-xt-docker'),
-                                              module=module,
-                                              commit=commit, refname=refname)
-        if _is_dirty(module_dir):
-            print('Skipping {} because it is dirty or on a detached HEAD'.format(module))
-            continue
-        if 'TRAVIS' in os.environ.keys() or 'DRONE' in os.environ.keys():
-            logging.info('Skipping templates because we are on travis')
-            continue
-        for tpl, outname in (('travis.yml.in', lambda m: path.join(superdir, m, '.travis.yml')),
-                            ('dune-xt-docker/after_script.bash.in', lambda m: path.join(superdir, m, '.travis.after_script.bash')),
-                            ('dune-xt-docker/script.bash.in', lambda m: path.join(superdir, m, '.travis.script.bash')),
-                            ('dune-xt-docker/test_python.bash.in', lambda m: path.join(superdir, m, '.travis.test_python.bash')),
-                            ('dune-xt-docker/make_env_file.py', lambda m: path.join(superdir, m, '.travis.make_env_file.py'))):
-            _update_plain(scriptdir, tpl, module, outname)
-
-    for i in names:
-        module = 'dune-xt-{}'.format(i)
-        module_dir = os.path.join(superdir, module)
-        if not skip_commit:
-            _commit(module_dir, message)
-    if skip_docker:
-        sys.exit(0)
-    client = docker.from_env(version='auto')
-
+        module_imgs += _build_combination(tag_matrix=TAG_MATRIX,
+                                            dockerdir=os.path.join(scriptdir, 'dune-xt-docker'),
+                                            module=module,
+                                            commit=commit, refname=refname)
