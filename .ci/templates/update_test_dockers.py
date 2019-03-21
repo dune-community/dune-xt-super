@@ -4,15 +4,10 @@
 Update docker images and templated scripts in dune-xt-*
 
 Usage:
-  update.py [options] COMMIT_MSG
-
-Arguments:
-  COMMIT_MSG The commit message used for the submodules
+  update.py [options]
 
 Options:
    -h --help       Show this message.
-   --nd            No docker image building.
-   --nc            No committing changes.
    -v --verbose    Set logging level to debug.
 """
 
@@ -20,14 +15,10 @@ from docopt import docopt
 from os import path
 import importlib
 import os
-import stat
 import contextlib
-import jinja2
-from string import Template as stringTemplate
 import subprocess
 import sys
 import logging
-import tempfile
 import time
 import six
 import re
