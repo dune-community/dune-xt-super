@@ -41,6 +41,21 @@ grid:
     variables:
       MODULE_NAME: dune-xt-grid
 
+functions:
+    extends: .docker-in-docker
+    variables:
+      MODULE_NAME: dune-xt-functions
+
+la:
+    extends: .docker-in-docker
+    variables:
+      MODULE_NAME: dune-xt-la
+
+data:
+    extends: .docker-in-docker
+    variables:
+      MODULE_NAME: dune-xt-data
+
 super:
   extends: .docker-in-docker
   variables:
