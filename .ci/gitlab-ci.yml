@@ -1,5 +1,6 @@
 stages:
-  - docker
+  - base
+  - modules
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -21,8 +22,14 @@ variables:
         - docker:dind
     environment:
         name: unsafe
-    stage: docker
-    script: dune-xt-common/.ci/shared/docker/update_test_dockers.py ${MODULE_NAME}
+    stage: modules
+    script: .ci/shared/docker/update_test_dockers.py ${MODULE_NAME}
+
+base:
+    extends: .docker-in-docker
+    stage: base
+    variables:
+      MODULE_NAME: BASE
 
 common:
     extends: .docker-in-docker
@@ -40,5 +47,5 @@ super:
     BASE: debian
     IMAGE: dunecommunity/xt-super_${BASE}:${CI_COMMIT_SHA}
   script: |
-    docker build --build-arg BASE=${BASE} -t ${IMAGE} -f dune-xt-common/.ci/shared/docker/super_docker/Dockerfile .
+    docker build --build-arg BASE=${BASE} -t ${IMAGE} -f .ci/shared/docker/super_docker/Dockerfile .
     docker push ${IMAGE}
