@@ -1,6 +1,9 @@
 stages:
   - docker
 
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
 .docker-in-docker:
     retry:
         max: 2
