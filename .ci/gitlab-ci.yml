@@ -24,7 +24,7 @@ variables:
     environment:
         name: unsafe
     stage: modules
-    script: .ci/shared/docker/update_test_dockers.py ${MODULE_NAME}
+    script: .ci/shared/docker/update_test_dockers.py -v ${MODULE_NAME}
 
 base:
     extends: .docker-in-docker
