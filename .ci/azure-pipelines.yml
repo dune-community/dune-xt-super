@@ -1,0 +1,31 @@
+stages:
+  - stage: base
+    displayName: base image
+    jobs:
+      - template: /.ci/azure-job-template.yml
+        parameters:
+          module_name: 'BASE'
+  - stage: modules
+    displayName: 'module images'
+    dependsOn: base
+    jobs:
+    - template: /.ci/azure-job-template.yml
+      parameters:
+        module_name: 'dune-xt-common'
+        jobname: 'common'
+    - template: /.ci/azure-job-template.yml
+      parameters:
+        module_name: 'dune-xt-grid'
+        jobname: 'grid'
+    - template: /.ci/azure-job-template.yml
+      parameters:
+        module_name: 'dune-xt-functions'
+        jobname: 'functions'
+    - template: /.ci/azure-job-template.yml
+      parameters:
+        module_name: 'dune-xt-la'
+        jobname: 'la'
+    - template: /.ci/azure-job-template.yml
+      parameters:
+        module_name: 'dune-xt-data'
+        jobname: 'data'
