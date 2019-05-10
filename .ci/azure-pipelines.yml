@@ -29,3 +29,22 @@ stages:
       parameters:
         module_name: 'dune-xt-data'
         jobname: 'data'
+    - job: super
+      timeoutInMinutes: 0
+      pool:
+        vmImage: 'ubuntu-16.04'
+      variables:
+        BASE: debian
+        IMAGE: dunecommunity/xt-super_debian:$(Build.SourceVersion)
+      steps:
+        - checkout: self
+          submodules: true
+        - task: Docker@1
+          displayName: Container registry login
+          inputs:
+            command: login
+            containerregistrytype: Container Registry
+            dockerRegistryEndpoint: dockerhub
+        - script: |
+            docker build --build-arg BASE=${BASE} -t ${IMAGE} -f .ci/shared/docker/super_docker/Dockerfile .
+            docker push ${IMAGE}
