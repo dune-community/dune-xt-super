@@ -12,23 +12,28 @@ stages:
     - template: /.ci/azure-job-template.yml
       parameters:
         module_name: 'dune-xt-common'
-        jobname: 'common'
+        job_name: 'common'
+        project_id: 'e04e6039-2a5b-4c44-a177-7b3ebfd818fb'
     - template: /.ci/azure-job-template.yml
       parameters:
         module_name: 'dune-xt-grid'
-        jobname: 'grid'
+        job_name: 'grid'
+        project_id: '330595af-ad86-47d1-9490-c365af05035a'
     - template: /.ci/azure-job-template.yml
       parameters:
         module_name: 'dune-xt-functions'
-        jobname: 'functions'
+        job_name: 'functions'
+        project_id: 'cf74f0af-14a0-4bba-94f5-f4ec6376229b'
     - template: /.ci/azure-job-template.yml
       parameters:
         module_name: 'dune-xt-la'
-        jobname: 'la'
+        job_name: 'la'
+        project_id: 'be2b706e-31ae-4c5e-bc75-63b3fd9d566c'
     - template: /.ci/azure-job-template.yml
       parameters:
         module_name: 'dune-xt-data'
-        jobname: 'data'
+        job_name: 'data'
+        project_id: '1a74e769-288c-4884-9cd4-190fc3bc4d54'
     - job: super
       timeoutInMinutes: 0
       pool:
