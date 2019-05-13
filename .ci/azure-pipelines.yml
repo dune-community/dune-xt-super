@@ -1,3 +1,9 @@
+# do not build prs at all
+pr:
+  branches:
+    exclude:
+    - '*'
+
 stages:
   - stage: base
     displayName: base image
