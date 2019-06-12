@@ -47,6 +47,7 @@ stages:
       variables:
         BASE: debian
         IMAGE: dunecommunity/xt-super_debian:$(Build.SourceVersion)
+        ALTTAG: dunecommunity/xt-super_debian:$(Build.SourceBranchName)
       steps:
         - checkout: self
           submodules: true
@@ -58,4 +59,6 @@ stages:
             dockerRegistryEndpoint: dockerhub
         - script: |
             docker build --build-arg BASE=${BASE} -t ${IMAGE} -f .ci/shared/docker/super_docker/Dockerfile .
+            docker tag ${IMAGE} ${ALTTAG}
             docker push ${IMAGE}
+            docker push ${ALTTAG}
