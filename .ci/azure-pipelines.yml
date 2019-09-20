@@ -18,8 +18,8 @@ stages:
     - template: /.ci/azure-job-template.yml
       parameters:
         module_name: 'dune-xt'
-        job_name: 'common'
-        project_id: 'fe89f0b2-b715-4c9d-af77-220e72e5f760'
+        job_name: 'xt'
+        project_id: 'd0ef5594-b45e-4274-9e9c-4318e2de6464'
     - template: /.ci/azure-job-template.yml
       parameters:
         module_name: 'dune-xt-data'
