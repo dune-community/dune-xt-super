@@ -4,6 +4,8 @@ demos-*
 build-*
 build/*
 *~
+tags
+.vscode
 
 # subdir for generated project files 
 clion
