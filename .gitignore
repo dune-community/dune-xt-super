@@ -5,6 +5,8 @@ build-*
 build/*
 *~
 tags
+tags.lock
+tags.temp
 .vscode
 
 # subdir for generated project files 
