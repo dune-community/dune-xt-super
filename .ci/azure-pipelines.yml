@@ -46,4 +46,6 @@ stages:
             docker build --build-arg BASE=${BASE} -t ${IMAGE} -f .ci/shared/docker/super_docker/Dockerfile .
             docker tag ${IMAGE} ${ALTTAG}
             docker push ${IMAGE}
+            docker rmi ${IMAGE}
             docker push ${ALTTAG}
+            docker rmi ${ALTTAG}
