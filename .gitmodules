@@ -31,9 +31,6 @@
 [submodule "dune-uggrid"]
 	path = dune-uggrid
 	url = https://github.com/dune-mirrors/dune-uggrid.git
-[submodule "dune-pybindxi"]
-	path = dune-pybindxi
-	url = https://github.com/dune-community/dune-pybindxi.git
 [submodule "dune-grid-glue"]
 	path = dune-grid-glue
 	url = https://github.com/dune-mirrors/dune-grid-glue.git
