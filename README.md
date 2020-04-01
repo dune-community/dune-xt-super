@@ -9,10 +9,8 @@
 
 dune-xt-super serves as a demonstration and testing module for:
 
-* [dune-xt-common](https://github.com/dune-community/dune-xt-common)
-* [dune-xt-grid](https://github.com/dune-community/dune-xt-grid)
-* [dune-xt-function](https://github.com/dune-community/dune-xt-functions)
-* [dune-xt-la](https://github.com/dune-community/dune-xt-la)
+* [dune-xt](https://zivgitlab.uni-muenster.de/ag-ohlberger/dune-community/dune-xt)
+* [dune-xt-data](https://github.com/dune-community/dune-xt-data)
 
 In order to build everything, do the following:
 
