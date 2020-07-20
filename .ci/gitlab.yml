@@ -29,7 +29,7 @@ variables:
         DOCKER_HOST: tcp://docker:2375/
         DOCKER_DRIVER: overlay2
     before_script:
-        - apk --update add openssh-client rsync git file bash python3 curl make
+        - apk --update add py3-pip openssh-client rsync git file bash python3 curl make
         - docker login -u ${DOCKER_USER} -p ${DOCKER_PW}
         - pip3 install docopt six docker
         - alias python=python3
