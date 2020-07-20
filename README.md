@@ -57,9 +57,9 @@ In order to build everything, do the following:
   ```
   
   This creates a directory corresponding to the selected options (e.g. `build-gcc-debug`)
-  which contains a subfolder for each DUNE module. See the `dune/foo/test` subfolders for
+  which contains a subfolder for each DUNE module. See the `dune/xt/test/foo` subfolders for
   tests, e.g.,
   
   ```
-  build-gcc-debug/dune-xt-common/dune/xt/common/test/
+  build-gcc-debug/dune-xt/dune/xt/test/common/
   ```
