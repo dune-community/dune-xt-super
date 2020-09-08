@@ -30,7 +30,7 @@
 	url = https://zivgitlab.uni-muenster.de/ag-ohlberger/dune-community/dune-alugrid
 [submodule "dune-uggrid"]
 	path = dune-uggrid
-	url = https://github.com/dune-mirrors/dune-uggrid.git
+	url = https://github.com/dune-community/dune-uggrid.git
 [submodule "dune-grid-glue"]
 	path = dune-grid-glue
 	url = https://github.com/dune-mirrors/dune-grid-glue.git
