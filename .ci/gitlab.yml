@@ -58,8 +58,8 @@ super:
   extends: .docker-in-docker
   variables:
     BASE: debian
-    IMAGE: dunecommunity/xt-super_debian:${CI_COMMIT_REF_NAME}
-    ALTTAG: dunecommunity/xt-super_debian:${CI_COMMIT_SHA}
+    IMAGE: ${CI_REGISTRY_IMAGE}/super_debian:${CI_COMMIT_REF_NAME}
+    ALTTAG: ${CI_REGISTRY_IMAGE}/super_debian:${CI_COMMIT_SHA}
   script:
       - docker build --build-arg BASE=${BASE} -t ${IMAGE} -f .ci/shared/docker/super_docker/Dockerfile .
       - docker tag ${IMAGE} ${ALTTAG}
