@@ -24,13 +24,13 @@ variables:
         max: 2
         when:
             - always
-    image: docker:stable
+    image: harbor.uni-muenster.de/proxy-docker/library/docker:stable
     variables:
         DOCKER_HOST: tcp://docker:2375/
         DOCKER_DRIVER: overlay2
     before_script:
         - apk --update add py3-pip openssh-client rsync git file bash python3 curl make
-        - docker login -u ${DOCKER_USER} -p ${DOCKER_PW}
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
         - pip3 install docopt six docker
         - alias python=python3
         - alias pip=pip3
