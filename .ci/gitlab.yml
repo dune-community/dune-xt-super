@@ -49,10 +49,6 @@ xt:
   stage: modules
   extends: .docker-in-docker
   script: .ci/shared/docker/update_test_dockers.py -v dune-xt
-xt-data:
-  stage: modules
-  extends: .docker-in-docker
-  script: .ci/shared/docker/update_test_dockers.py -v dune-xt-data
 super:
   stage: modules
   extends: .docker-in-docker
