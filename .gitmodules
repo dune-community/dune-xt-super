@@ -15,13 +15,13 @@
 	url = https://github.com/dune-community/dune-testtools.git
 [submodule "dune-geometry"]
 	path = dune-geometry
-	url = http://github.com/dune-community/dune-geometry.git
+	url = https://github.com/dune-community/dune-geometry.git
 [submodule "dune-grid"]
 	path = dune-grid
-	url = http://github.com/dune-community/dune-grid.git
+	url = https://github.com/dune-community/dune-grid.git
 [submodule "dune-istl"]
 	path = dune-istl
-	url = http://github.com/dune-mirrors/dune-istl.git
+	url = https://github.com/dune-mirrors/dune-istl.git
 [submodule "scripts"]
 	path = scripts
 	url = https://github.com/wwu-numerik/scripts.git
