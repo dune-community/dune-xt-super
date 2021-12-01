@@ -1,9 +1,10 @@
 [submodule "config.opts"]
 	path = config.opts
-	url = https://github.com/dune-community/config.opts.git
+        url = https://zivgitlab.uni-muenster.de/ag-ohlberger/dune-community/config-opts.git
 [submodule "local/bin"]
 	path = bin
 	url = https://github.com/dune-community/local-bin.git
+        url = https://zivgitlab.uni-muenster.de/ag-ohlberger/dune-community/local-bin.git
 [submodule "dune-common"]
 	path = dune-common
 	url = https://github.com/dune-community/dune-common.git
@@ -15,13 +16,13 @@
 	url = https://github.com/dune-community/dune-testtools.git
 [submodule "dune-geometry"]
 	path = dune-geometry
-	url = http://github.com/dune-community/dune-geometry.git
+	url = https://github.com/dune-community/dune-geometry.git
 [submodule "dune-grid"]
 	path = dune-grid
-	url = http://github.com/dune-community/dune-grid.git
+	url = https://github.com/dune-community/dune-grid.git
 [submodule "dune-istl"]
 	path = dune-istl
-	url = http://github.com/dune-mirrors/dune-istl.git
+	url = https://github.com/dune-mirrors/dune-istl.git
 [submodule "scripts"]
 	path = scripts
 	url = https://github.com/wwu-numerik/scripts.git
@@ -36,7 +37,7 @@
 	url = https://github.com/dune-mirrors/dune-grid-glue.git
 [submodule ".ci/shared"]
 	path = .ci/shared
-	url = https://github.com/dune-community/dune-xt-ci.git
+        url = https://zivgitlab.uni-muenster.de/ag-ohlberger/dune-community/dune-xt-ci.git
 [submodule "dune-xt"]
 	path = dune-xt
 	url = https://zivgitlab.uni-muenster.de/ag-ohlberger/dune-community/dune-xt.git
